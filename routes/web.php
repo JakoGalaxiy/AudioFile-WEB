@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return view('auth.login');
+<<<<<<< HEAD
 })->name('login');
 
 Route::get('/register', function () {
@@ -17,3 +18,6 @@ Route::get('/register', function () {
 })->name('register');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+=======
+})->name('login');
+>>>>>>> e0bdb9fc59dc1af4c4fe8faee9a2259cfcee71bb
