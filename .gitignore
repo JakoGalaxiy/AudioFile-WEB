@@ -32,6 +32,7 @@ auth.json
 docker-compose.override.yml
 
 .idea/
+.vs/
 .vscode/
 *.swp
 *.swo
