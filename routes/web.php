@@ -10,14 +10,10 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return view('auth.login');
-<<<<<<< HEAD
 })->name('login');
 
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-=======
-})->name('login');
->>>>>>> e0bdb9fc59dc1af4c4fe8faee9a2259cfcee71bb
+// Route::get('/home', [HomeController::class, 'index'])->name('home'); ---> Esto quedó comentado

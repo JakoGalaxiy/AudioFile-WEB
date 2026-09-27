@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Simulador</title>
+    <title>Registrarse - Spotify</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2.0">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2.0">
+
     <style>
         * {
             box-sizing: border-box;
@@ -148,7 +152,7 @@
         <button type="submit" class="register-btn">Sign Up</button>
         
         <div class="footer-links">
-            Already have an account? <a href="#" class="login-link">Log In</a>
+            Already have an account? <a href="{{ route('login') }}" class="login-link">Log In</a>
         </div>
     </form>
 </div>

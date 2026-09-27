@@ -23,7 +23,6 @@ Homestead.json
 Homestead.yaml
 auth.json
 
-.vs/
 .env
 .env.*
 !.env.example
@@ -33,6 +32,7 @@ auth.json
 docker-compose.override.yml
 
 .idea/
+.vs/
 .vscode/
 *.swp
 *.swo
