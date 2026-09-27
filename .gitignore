@@ -23,6 +23,7 @@ Homestead.json
 Homestead.yaml
 auth.json
 
+.vs/
 .env
 .env.*
 !.env.example

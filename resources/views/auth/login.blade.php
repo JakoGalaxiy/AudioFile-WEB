@@ -4,11 +4,79 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - Music App</title>
-    <!-- Tailwind CSS por CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Estilo para corregir el fondo blanco al autocompletar en navegadores -->
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #121620;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .login-card {
+            background-color: #191f2d;
+            padding: 40px 35px;
+            border-radius: 32px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .login-card h1 {
+            text-align: center;
+            margin: 0 0 8px 0;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 14px;
+            margin-bottom: 35px;
+        }
+        .input-group {
+            background-color: #121620;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            margin-bottom: 20px;
+            border: 1px solid #1f2937;
+            transition: border-color 0.2s;
+        }
+        .input-group:focus-within {
+            border-color: #22d3ee;
+        }
+        .input-group svg {
+            width: 20px;
+            height: 20px;
+            fill: none;
+            stroke: #6b7280;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+        }
+        .input-group input {
+            background: transparent;
+            border: none;
+            color: #f3f4f6;
+            padding: 16px 12px;
+            width: 100%;
+            outline: none;
+            font-size: 15px;
+        }
+        .input-group input::placeholder {
+            color: #6b7280;
+        }
+        /* Corrección para el autocompletado en navegadores */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus, 
@@ -17,55 +85,85 @@
             -webkit-text-fill-color: #f3f4f6 !important;
             transition: background-color 5000s ease-in-out 0s;
         }
+        .btn-submit {
+            background: linear-gradient(135deg, #22d3ee, #5eead4);
+            color: #121620;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.1);
+            transition: opacity 0.2s;
+        }
+        .btn-submit:hover {
+            opacity: 0.9;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+            font-size: 14px;
+        }
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: #f3f4f6;
+        }
+        .footer-links a.highlight {
+            color: #22d3ee;
+            font-weight: 500;
+        }
+        .footer-links a.highlight:hover {
+            color: #67e8f9;
+        }
+        .error-alert {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #f87171;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 bg-[#121620] font-sans">
+<body>
 
-    <!-- Tarjeta Principal con estilo de la plantilla -->
-    <div class="w-full max-w-md bg-[#191f2d] p-8 sm:p-10 rounded-[2rem] shadow-2xl border border-gray-800/80 relative overflow-hidden">
-        
-        <!-- Encabezado -->
-        <div class="text-center mb-10">
-            <h1 class="text-3xl font-bold text-white tracking-tight">Welcome Back!</h1>
-            <p class="text-sm text-gray-400 mt-2">Login to continue to our app</p>
-        </div>
+    <div class="login-card">
+        <h1>Welcome Back!</h1>
+        <div class="subtitle">Login to continue to our app</div>
 
-        <!-- Alerta de Error -->
-        <div id="error-alert" class="hidden mb-6 p-3 bg-red-500/10 border border-red-500/30 text-red-400 text-sm rounded-xl text-center"></div>
+        <div id="error-alert" class="error-alert"></div>
 
-        <!-- Formulario -->
-        <form id="login-form" class="space-y-5">
-            <!-- Input Email con Icono -->
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                </span>
-                <input type="email" id="email" required autocomplete="email"
-                    class="w-full pl-12 pr-4 py-4 bg-[#121620] border border-gray-800 rounded-2xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
-                    placeholder="Email Address">
+        <form id="login-form">
+            <!-- Campo Email -->
+            <div class="input-group">
+                <svg viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
             </div>
 
-            <!-- Input Password con Icono -->
-            <div class="relative">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                </span>
-                <input type="password" id="password" required autocomplete="current-password"
-                    class="w-full pl-12 pr-4 py-4 bg-[#121620] border border-gray-800 rounded-2xl text-gray-100 placeholder-gray-500 focus:outline-none focus:border-cyan-400 transition"
-                    placeholder="Password">
+            <!-- Campo Contraseña -->
+            <div class="input-group">
+                <svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
             </div>
 
-            <!-- Botón de Log In -->
-            <button type="submit" id="submit-btn"
-                class="w-full mt-4 py-4 bg-gradient-to-r from-cyan-400 to-teal-300 hover:from-cyan-300 hover:to-teal-200 text-[#121620] font-bold rounded-2xl shadow-lg shadow-cyan-500/10 transition duration-200">
-                Log In
-            </button>
+            <button type="submit" id="submit-btn" class="btn-submit">Log In</button>
         </form>
 
-        <!-- Enlaces inferiores -->
-        <div class="flex justify-between items-center mt-6 text-sm">
-            <a href="#" class="text-gray-400 hover:text-gray-200 transition">Remember Me</a>
-            <a href="#" class="text-cyan-400 hover:text-cyan-300 transition font-medium">Forgot Password?</a>
+        <div class="footer-links">
+            <a href="#">Remember Me</a>
+            <a href="#" class="highlight">Forgot Password?</a>
         </div>
     </div>
 
@@ -79,7 +177,7 @@
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorAlert.classList.add('hidden');
+            errorAlert.style.display = 'none';
             submitBtn.disabled = true;
             submitBtn.textContent = 'Processing...';
 
@@ -109,7 +207,7 @@
 
             } catch (error) {
                 errorAlert.textContent = error.message;
-                errorAlert.classList.remove('hidden');
+                errorAlert.style.display = 'block';
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'Log In';
             }
