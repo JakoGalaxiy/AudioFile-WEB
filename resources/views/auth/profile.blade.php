@@ -211,43 +211,43 @@
             <!-- Contenedor Principal que centra el formulario de perfil -->
             <div class="main-content">
                 <div class="register-card">
-                    <h2>Account Profile</h2>
-                    <div class="subtitle">Manage your personal information</div>
+                    <h2>Perfil de Usuario</h2>
+                    <div class="subtitle">Gestiona tu información</div>
                     
                     <div id="error-alert" class="alert error-alert"></div>
                     <div id="success-alert" class="alert success-alert"></div>
 
                     <form id="profile-form">
                         <!-- Campo Nombre -->
-                        <div class="section-label">Personal Info</div>
+                        <div class="section-label">Información personal</div>
                         <div class="input-group">
                             <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                            <input type="text" id="name" placeholder="Full Name" required>
+                            <input type="text" id="name" placeholder="Nombre de usuario" required>
                         </div>
 
                         <!-- Campo Email -->
                         <div class="input-group">
                             <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            <input type="email" id="email" placeholder="Email Address" required>
+                            <input type="email" id="email" placeholder="Correo electrónico" required>
                         </div>
                         
                         <!-- Sección Contraseña -->
                         <div class="section-label">Change Password (Optional)</div>
                         <div class="input-group">
                             <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                            <input type="password" id="password" placeholder="New Password">
+                            <input type="password" id="password" placeholder="Nueva contraseña">
                         </div>
 
                         <div class="input-group">
                             <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                            <input type="password" id="password_confirmation" placeholder="Confirm New Password">
+                            <input type="password" id="password_confirmation" placeholder="Confirma nueva contraseña">
                         </div>
                         
-                        <button type="submit" id="update-btn" class="register-btn">Save Changes</button>
+                        <button type="submit" id="update-btn" class="register-btn">Guardar cambios</button>
                     </form>
 
                     <!-- Botón de Cerrar Sesión -->
-                    <button type="button" id="logout-btn" class="logout-btn">Log Out</button>
+                    <button type="button" id="logout-btn" class="logout-btn">Cerrar sesión</button>
                 </div>
             </div>
 
@@ -274,8 +274,8 @@
                             const profileName = userDataNav.name || 'Mi Perfil';
                             htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">👤 ${profileName}</a>`;
                         } else {
-                            htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Log In</a>`;
-                            htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Sign Up</a>`;
+                            htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
+                            htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Regístrate</a>`;
                         }
                         navContainer.innerHTML = htmlLinks;
                     }

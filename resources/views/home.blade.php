@@ -34,10 +34,45 @@
                 width: 100%;
                 }
                 .nav-brand {
-                font-size: 20px;
-                font-weight: bold;
-                color: #2CE4F5;
-                text-decoration: none;
+                    font-size: 20px;
+                    font-weight: bold;
+                    color: #2CE4F5;
+                    text-decoration: none;
+                }
+                /* Estilos de la barra de búsqueda */
+                .nav-search {
+                    display: flex;
+                    align-items: center;
+                    background-color: #151924;
+                    border: 1px solid rgba(44, 228, 245, 0.2);
+                    border-radius: 20px;
+                    padding: 6px 15px;
+                    width: 300px;
+                    transition: border-color 0.2s;
+                }
+                .nav-search:focus-within {
+                    border-color: #2CE4F5;
+                }
+                .nav-search input {
+                    background: transparent;
+                    border: none;
+                    color: #FFFFFF;
+                    font-size: 13px;
+                    width: 100%;
+                    outline: none;
+                }
+                .nav-search input::placeholder {
+                    color: #6A7B92;
+                }
+                .nav-search button {
+                    background: transparent;
+                    border: none;
+                    color: #6A7B92;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+                .nav-search button:hover {
+                    color: #2CE4F5;
                 }
                 .nav-links {
                     display: flex;
@@ -64,14 +99,124 @@
                 .nav-btn-action:hover {
                     opacity: 0.9;
                 }
-                .profile-badge {
-                    background-color: #151924;
-                    padding: 8px 15px;
-                    border-radius: 20px;
-                    border: 1px solid rgba(44, 228, 245, 0.3);
-                    color: #2CE4F5 !important;
-                    font-weight: 600;
+                /* Estilos del Avatar y Menú Desplegable */
+                .profile-menu-container {
+                    position: relative;
+                    display: inline-block;
+                }
+                /* Botón exclusivo del Avatar */
+                .profile-avatar-btn {
+                    background: transparent;
+                    border: 2px solid rgba(44, 228, 245, 0.4);
+                    border-radius: 50%;
+                    padding: 0;
+                    cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    transition: border-color 0.2s, transform 0.2s;
+                }
+                .profile-avatar-btn:hover {
+                    border-color: #2CE4F5;
+                    transform: scale(1.05);
+                }
+                .profile-avatar-img, .profile-avatar-placeholder {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #2CE4F5;
+                    color: #13161F;
+                    font-weight: bold;
+                    font-size: 15px;
+                }
+                /* Menú Desplegable */
+                .profile-dropdown {
+                    display: none;
+                    position: absolute;
+                    right: 0;
+                    top: 120%;
+                    background-color: #1E2433;
+                    border: 1px solid rgba(44, 228, 245, 0.2);
+                    border-radius: 10px;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                    min-width: 240px;
+                    z-index: 101;
+                    padding: 12px 0;
+                }
+                .profile-dropdown.show {
+                    display: block;
+                }
+                .profile-dropdown-header {
+                    padding: 8px 16px 12px 16px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                }
+                .dropdown-avatar {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    background-color: #2CE4F5;
+                    color: #13161F;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                }
+                .dropdown-user-info {
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                }
+                .dropdown-name {
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #FFFFFF;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .dropdown-email {
+                    font-size: 12px;
+                    color: #6A7B92;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .profile-dropdown hr {
+                    border: none;
+                    border-top: 1px solid rgba(255, 255, 255, 0.1);
+                    margin: 4px 0;
+                }
+                .profile-dropdown a, .profile-dropdown button {
+                    display: block;
+                    width: 100%;
+                    padding: 8px 16px;
+                    color: #6A7B92;
+                    text-decoration: none;
                     font-size: 13px;
+                    background: none;
+                    border: none;
+                    text-align: left;
+                    cursor: pointer;
+                    transition: background-color 0.2s, color 0.2s;
+                }
+                .profile-dropdown a:hover, .profile-dropdown button:hover {
+                    background-color: #252D42;
+                    color: #FFFFFF;
+                }
+                .logout-btn {
+                    color: #ff5c5c !important;
+                }
+                .logout-btn:hover {
+                    background-color: rgba(255, 92, 92, 0.1) !important;
                 }
                 /* Contenedor Principal */
                 .container {
@@ -113,7 +258,6 @@
                     cursor: pointer;
                 }
                 .music-card:hover {
-                    transform: translateY(-5px);
                     background-color: #252D42;
                 }
                 .card-img {
@@ -154,18 +298,23 @@
             <!-- Barra de Navegación Global -->
             <nav class="navbar">
                 <a href="{{ route('home') }}" class="nav-brand">AudioFile</a>
+                
+                <form action="#" method="GET" class="nav-search">
+                    <input type="text" name="query" placeholder="Buscar canciones o artistas" required>
+                    <button type="submit">
+                        <img src="{{ asset('images/nav-search.svg') }}" alt="Buscar" width="20" height="20">
+                    </button>
+                </form>
+
                 <div class="nav-links" id="nav-links-container">
                     <a href="{{ route('home') }}" class="nav-link-home">Inicio</a>
                 </div>
             </nav>
 
             <div class="container">
-                
-                <!-- 1. Sección de Accesos Directos -->
-                <div class="section-wrapper" id="shortcuts-section">
+                <div class="section-wrapper">
                     <h2 class="section-title">Accesos Directos & Recientes</h2>
-                    <div class="card-grid" id="shortcuts-grid">
-                        <!-- Se llenará dinámicamente vía JS -->
+                    <div class="card-grid">
                         <div class="music-card">
                             <div class="card-img">Sin conexión</div>
                             <div class="card-title">Cargando...</div>
@@ -220,7 +369,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <script>
@@ -231,53 +379,81 @@
 
                     if (!navContainer) return;
 
-                    // Detectar en qué página estamos para marcar la clase .active
                     const currentPath = window.location.pathname;
-
                     let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
 
                     if (token) {
-                        // Si hay sesión iniciada, mostrar botón de perfil
-                        const profileName = userData.name || 'Mi Perfil';
-                        htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">👤 ${profileName}</a>`;
-                    } else {
-                        // Si NO hay sesión iniciada, mostrar botones de Login y Register
-                        htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Log In</a>`;
-                        htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Sign Up</a>`;
-                    }
-
-                    navContainer.innerHTML = htmlLinks;
-                });
-            </script>
-            
-            <!-- Prueba para el botón "Mi Perfil" - simula un token de usuario -->
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    const token = localStorage.getItem('auth_token');
-                    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-                    const navContainer = document.getElementById('nav-links-container');
-
-                    if (!navContainer) return;
-
-                    const currentPath = window.location.pathname;
-
-                    // Enlace de Inicio
-                    let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
-
-                    // FORZAR LA PRUEBA: Para que aparezca el boton "Mi Perfil" en la interfaz, cambiar temporalmente la condición a: if (true || token), una vez hecha la prueba, simplemente hay que quitar el "true"
-                    if (token || true) { 
-                        const profileName = userData.name || 'Mi Perfil';
+                        const profileName = userData.name || 'Usuario';
+                        const profileEmail = userData.email || 'usuario@audiofile.com';
                         
-                        // Usamos la ruta de Laravel directamente para el botón de perfil
-                        htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">👤 ${profileName}</a>`;
+                        // Generar avatar local o inicial si no existe imagen subida
+                        let avatarContent = '';
+                        let dropdownAvatarContent = '';
+
+                        if (userData.avatar) {
+                            // Si el avatar es una ruta de archivo local almacenada en el servidor o app
+                            avatarContent = `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">`;
+                            dropdownAvatarContent = `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">`;
+                        } else {
+                            // Fallback con la inicial del nombre si no hay foto de perfil subida
+                            const initial = profileName.charAt(0).toUpperCase();
+                            avatarContent = `<div class="profile-avatar-placeholder">${initial}</div>`;
+                            dropdownAvatarContent = `<div class="dropdown-avatar">${initial}</div>`;
+                        }
+
+                        // Renderizar únicamente el avatar como botón interactivo
+                        htmlLinks += `
+                            <div class="profile-menu-container">
+                                <button type="button" class="profile-avatar-btn" onclick="toggleProfileMenu(event)" aria-label="Menú de usuario">
+                                    ${avatarContent}
+                                </button>
+                                <div class="profile-dropdown" id="profileDropdownMenu">
+                                    <div class="profile-dropdown-header">
+                                        ${dropdownAvatarContent}
+                                        <div class="dropdown-user-info">
+                                            <span class="dropdown-name">${profileName}</span>
+                                            <span class="dropdown-email">${profileEmail}</span>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <a href="{{ route('profile') }}">Ver Perfil</a>
+                                    <hr>
+                                    <button type="button" class="logout-btn" onclick="confirmLogout()">Cerrar sesión</button>
+                                </div>
+                            </div>
+                        `;
                     } else {
-                        htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Log In</a>`;
-                        htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Sign Up</a>`;
+                        htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
+                        htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Regístrate</a>`;
                     }
 
                     navContainer.innerHTML = htmlLinks;
-                });
-            </script>
 
+                    // Cerrar el menú si se hace clic fuera de él
+                    document.addEventListener('click', (event) => {
+                        const container = document.querySelector('.profile-menu-container');
+                        const dropdown = document.getElementById('profileDropdownMenu');
+                        if (container && dropdown && !container.contains(event.target)) {
+                            dropdown.classList.remove('show');
+                        }
+                    });
+                });
+
+                function toggleProfileMenu(event) {
+                    event.stopPropagation();
+                    const dropdown = document.getElementById('profileDropdownMenu');
+                    if (dropdown) {
+                        dropdown.classList.toggle('show');
+                    }
+                }
+
+                function confirmLogout() {
+                    if (confirm("¿Seguro que quieres cerrar sesión?")) {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('user_data');
+                        window.location.href = "{{ route('login') }}";
+                    }
+                }
+            </script>
         </body>
     </html>

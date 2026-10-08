@@ -201,8 +201,8 @@
             <!-- Contenedor principal que centra la tarjeta -->
             <div class="main-content">
                 <div class="login-card">
-                     <h2>Welcome Back</h2>
-                    <div class="subtitle">Login to continue to our app</div>
+                     <h2>¡Hola de nuevo!</h2>
+                    <div class="subtitle">Inicia sesión para continuar</div>
                         
                     <div id="error-alert" class="error-alert"></div>
 
@@ -211,20 +211,20 @@
                             <svg viewBox="0 0 24 24">
                                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                             </svg>
-                            <input type="email" id="email" placeholder="Email Address" required autocomplete="email">
+                            <input type="email" id="email" placeholder="Correo electrónico" required autocomplete="email">
                         </div>
                             
                         <div class="input-group">
                             <svg viewBox="0 0 24 24">
                                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
                             </svg>
-                            <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                            <input type="password" id="password" placeholder="Contraseña" required autocomplete="current-password">
                         </div>
                             
-                        <button type="submit" id="submit-btn" class="login-btn">Log In</button>
+                        <button type="submit" id="submit-btn" class="login-btn">Iniciar sesión</button>
                             
                         <div class="footer-links">
-                            Don't have an account? <a href="{{ route('register') }}" class="login-link">Sign Up</a>
+                            ¿No tienes cuenta? <a href="{{ route('register') }}" class="login-link">Regístrate</a>
                         </div>
                     </form>
                 </div>
@@ -272,7 +272,7 @@
                         errorAlert.textContent = error.message;
                         errorAlert.style.display = 'block';
                         submitBtn.disabled = false;
-                        submitBtn.textContent = 'Log In';
+                        submitBtn.textContent = 'Iniciar sesión';
                     }
                 });
             </script>
@@ -290,11 +290,7 @@
                     let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
 
                     if (token) {
-                        const profileName = userData.name || 'Mi Perfil';
-                        htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">👤 ${profileName}</a>`;
-                    } else {
-                        htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Log In</a>`;
-                        htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Sign Up</a>`;
+                        window.location.href = "{{ route('home') }}";
                     }
 
                     navContainer.innerHTML = htmlLinks;
