@@ -230,7 +230,6 @@
                 </div>
             </div>
 
-            <!-- Script JavaScript para la API -->
             <script>
                 const API_BASE_URL = "{{ env('VITE_API_BASE_URL', 'http://127.0.0.1:8000') }}";
 
@@ -266,7 +265,7 @@
                         localStorage.setItem('auth_token', data.access_token);
                         localStorage.setItem('user_data', JSON.stringify(data.user));
 
-                        window.location.href = '/dashboard';
+                        window.location.href = '/';
 
                     } catch (error) {
                         errorAlert.textContent = error.message;

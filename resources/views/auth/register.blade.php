@@ -187,15 +187,15 @@
                 </div>
             </nav>
 
+            <div id="alertMessage" class="alert error-alert"></div>
+
             <!-- Contenedor principal que centra la tarjeta -->
             <div class="main-content">
                 <div class="register-card">
                     <h2>Crear cuenta</h2>
                     <div class="subtitle">Regístrate para empezar a escuchar contenido</div>
                     
-                    <form action="#" method="POST">
-                        
-                        <!-- Campo Nombre -->
+                    <form id="registerForm">
                         <div class="input-group">
                             <svg viewBox="0 0 24 24">
                                 <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -203,7 +203,6 @@
                             <input type="text" name="name" placeholder="Nombre de usuario" required>
                         </div>
 
-                        <!-- Campo Email -->
                         <div class="input-group">
                             <svg viewBox="0 0 24 24">
                                 <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
@@ -211,7 +210,6 @@
                             <input type="email" name="email" placeholder="Correo electrónico" required>
                         </div>
                         
-                        <!-- Campo Contraseña -->
                         <div class="input-group">
                             <svg viewBox="0 0 24 24">
                                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
@@ -219,7 +217,6 @@
                             <input type="password" name="password" placeholder="Contraseña" required>
                         </div>
 
-                        <!-- Confirmar Contraseña -->
                         <div class="input-group">
                             <svg viewBox="0 0 24 24">
                                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
@@ -227,33 +224,112 @@
                             <input type="password" name="password_confirmation" placeholder="Confirma contraseña" required>
                         </div>
                         
-                        <button type="submit" class="register-btn">Regístrate</button>
+                        <button type="submit" class="register-btn" id="submitBtn">Regístrate</button>
                         
                         <div class="footer-links">
                             ¿Ya tienes una cuenta? <a href="{{ route('login') }}" class="login-link">Iniciar sesión</a>
                         </div>
                     </form>
+
                 </div>
             </div>
 
             <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    const token = localStorage.getItem('auth_token');
-                    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-                    const navContainer = document.getElementById('nav-links-container');
+                document.getElementById('registerForm').addEventListener('submit', async function(e) {
+                    e.preventDefault(); 
 
-                    if (!navContainer) return;
+                    const alertBox = document.getElementById('alertMessage');
+                    const submitBtn = document.getElementById('submitBtn');
+                    alertBox.style.display = 'none';
+                    
+                    const originalBtnText = submitBtn.innerText;
+                    submitBtn.innerText = 'Cargando...';
+                    submitBtn.disabled = true;
 
-                    const currentPath = window.location.pathname;
+                    const formData = new FormData(this);
+                    const data = Object.fromEntries(formData.entries());
 
-                    let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
-
-                    if (token) {
-                        const profileName = userData.name || 'Mi Perfil';
-                        window.location.href = "{{ route('home') }}";
+                    if (data.password !== data.password_confirmation) {
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'Las contraseñas no coinciden.';
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
                     }
 
-                    navContainer.innerHTML = htmlLinks;
+                    if (data.password.length < 8) {
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'La contraseña debe tener un mínimo de 8 caracteres.';
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    if (!/[A-Z]/.test(data.password)) {
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'La contraseña debe incluir al menos una letra en mayúscula.';
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    if (!/\d/.test(data.password)) {
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'Falta un número en la contraseña.';
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    if (!/[!@#$%^&*(),.?":{}|<>_\-+=/[\]~`]/.test(data.password)) {
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'Falta un símbolo especial en la contraseña.';
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+
+                    const apiUrl = "{{ env('API_URL', 'http://localhost/api') }}";
+
+                    try {
+                        const response = await fetch(`${apiUrl}/register`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json' 
+                            },
+                            body: JSON.stringify(data)
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            const token = result.token || result.access_token;
+                            if (token) {
+                                localStorage.setItem('auth_token', token);
+                            }
+                            // Envía directo a /home con sesión iniciada sin pasar por /login
+                            window.location.href = "/";
+                        } else {
+                            let errorMessage = result.message || 'Verifica los datos ingresados.';
+                            if (result.errors) {
+                                if (result.errors.email) {
+                                    errorMessage = 'Este correo electrónico ya está registrado.';
+                                } else if (result.errors.name) {
+                                    errorMessage = 'Este nombre de usuario ya está en uso.';
+                                }
+                            }
+                            alertBox.style.display = 'block';
+                            alertBox.innerText = errorMessage;
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alertBox.style.display = 'block';
+                        alertBox.innerText = 'No se pudo conectar con la API.';
+                    } finally {
+                        submitBtn.innerText = originalBtnText;
+                        submitBtn.disabled = false;
+                    }
                 });
             </script>
 
