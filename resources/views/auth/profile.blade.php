@@ -246,20 +246,20 @@
                         <button type="submit" id="update-btn" class="register-btn">Guardar cambios</button>
                     </form>
 
-                    <!-- Botón de Cerrar Sesión -->
                     <button type="button" id="logout-btn" class="logout-btn">Cerrar sesión</button>
                 </div>
             </div>
 
-            <!-- Script JavaScript para sincronización con la API, navbar y localStorage -->
             <script>
                 const API_BASE_URL = "{{ env('VITE_API_BASE_URL', 'http://127.0.0.1:8000') }}";
                 const token = localStorage.getItem('auth_token'); 
 
-                // Redirigir al login si no hay token activo (Descomentar para producción con API activa)
-             /* if (!token) {
+                // Redirigir al login si no hay token activo
+                if (!token) {
                     window.location.href = "{{ route('login') }}";
-                } */
+                }
+
+                
 
                 // Renderizado dinámico de la Barra de Navegación
                 document.addEventListener("DOMContentLoaded", () => {
@@ -272,7 +272,7 @@
 
                         if (token) {
                             const profileName = userDataNav.name || 'Mi Perfil';
-                            htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">👤 ${profileName}</a>`;
+                            htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">${profileName}</a>`;
                         } else {
                             htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
                             htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Regístrate</a>`;
@@ -313,7 +313,7 @@
 
                     try {
                         const response = await fetch(`${API_BASE_URL}/api/profile`, {
-                            method: 'PUT', // o PATCH según el API backend
+                            method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
@@ -335,7 +335,7 @@
 
                         // Actualizar el texto del badge de perfil en la navbar si existe
                         const badge = document.querySelector('.profile-badge');
-                        if(badge && bodyData.name) badge.textContent = `👤 ${bodyData.name}`;
+                        if(badge && bodyData.name) badge.textContent = `${bodyData.name}`;
 
                     } catch (error) {
                         errorAlert.textContent = error.message;
@@ -348,24 +348,24 @@
 
                 // Manejar cierre de sesión
                 logoutBtn.addEventListener('click', async () => {
-                    try {
-                        await fetch(`${API_BASE_URL}/api/logout`, {
-                            method: 'POST',
-                            headers: {
-                                'Accept': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
-                    } catch (e) {
-                        console.error('Error al notificar cierre de sesión al servidor', e);
-                    } finally {
-                        // Limpiar credenciales locales y redirigir
-                        localStorage.removeItem('auth_token');
-                        localStorage.removeItem('user_data');
-                        window.location.href = "{{ route('login') }}";
+                    if (confirm("¿Seguro que quieres cerrar sesión?")) {
+                        try {
+                            await fetch(`${API_BASE_URL}/api/logout`, {
+                                method: 'POST',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+                        } catch (e) {
+                            console.error('Error al notificar cierre de sesión al servidor', e);
+                        } finally {
+                            localStorage.removeItem('auth_token');
+                            localStorage.removeItem('user_data');
+                            window.location.href = "{{ route('login') }}";
+                        }
                     }
                 });
             </script>
-
         </body>
     </html>

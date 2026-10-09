@@ -22,22 +22,47 @@
                 }
                 /* Estilos de la Navbar */
                 .navbar {
-                background-color: #1E2433;
-                padding: 15px 30px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                width: 100%;
+                    background-color: #1E2433;
+                    padding: 15px 30px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    position: sticky;
+                    top: 0;
+                    z-index: 100;
+                    width: 100%;
                 }
                 .nav-brand {
                     font-size: 20px;
                     font-weight: bold;
                     color: #2CE4F5;
                     text-decoration: none;
+                }
+                .nav-links {
+                    display: flex;
+                    gap: 20px;
+                    align-items: center;
+                }
+                .nav-links a {
+                    color: #6A7B92;
+                    text-decoration: none;
+                    font-size: 14px;
+                    font-weight: 600;
+                    transition: color 0.2s;
+                }
+                .nav-links a:hover, .nav-links a.active {
+                    color: #FFFFFF;
+                }
+                .nav-btn-action {
+                    background: linear-gradient(to right, #2CE4F5, #67F4CE);
+                    color: #13161F !important;
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    font-weight: bold !important;
+                }
+                .nav-btn-action:hover {
+                    opacity: 0.9;
                 }
                 /* Estilos de la barra de búsqueda */
                 .nav-search {
@@ -73,31 +98,6 @@
                 }
                 .nav-search button:hover {
                     color: #2CE4F5;
-                }
-                .nav-links {
-                    display: flex;
-                    gap: 20px;
-                    align-items: center;
-                }
-                .nav-links a {
-                    color: #6A7B92;
-                    text-decoration: none;
-                    font-size: 14px;
-                    font-weight: 600;
-                    transition: color 0.2s;
-                }
-                .nav-links a:hover, .nav-links a.active {
-                    color: #FFFFFF;
-                }
-                .nav-btn-action {
-                    background: linear-gradient(to right, #2CE4F5, #67F4CE);
-                    color: #13161F !important;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    font-weight: bold !important;
-                }
-                .nav-btn-action:hover {
-                    opacity: 0.9;
                 }
                 /* Estilos del Avatar y Menú Desplegable */
                 .profile-menu-container {
@@ -281,7 +281,7 @@
                     text-overflow: ellipsis;
                     margin-bottom: 4px;
                 }
-                .card-subtitle {
+                .card-artist {
                     font-size: 12px;
                     color: #6A7B92;
                     white-space: nowrap;
@@ -318,7 +318,7 @@
                         <div class="music-card">
                             <div class="card-img">Sin conexión</div>
                             <div class="card-title">Cargando...</div>
-                            <div class="card-subtitle">Favoritos / Recientes</div>
+                            <div class="card-artist">Favoritos / Recientes</div>
                         </div>
                     </div>
                 </div>
@@ -328,9 +328,9 @@
                     <h2 class="section-title">Lo más escuchado en la aplicación</h2>
                     <div class="card-grid" id="trending-grid">
                         <div class="music-card">
-                            <div class="card-img">Trending</div>
+                            <div class="card-img">cover</div>
                             <div class="card-title">Popular Track</div>
-                            <div class="card-subtitle">Global Hits</div>
+                            <div class="card-artist">Artist name</div>
                         </div>
                     </div>
                 </div>
@@ -340,9 +340,9 @@
                     <h2 class="section-title">Para Ti (Basado en tus gustos)</h2>
                     <div class="card-grid" id="foryou-grid">
                         <div class="music-card">
-                            <div class="card-img">Recomendado</div>
+                            <div class="card-img">cover</div>
                             <div class="card-title">Mix Personal</div>
-                            <div class="card-subtitle">Basado en historial</div>
+                            <div class="card-artist">Artist name</div>
                         </div>
                     </div>
                 </div>
@@ -352,20 +352,20 @@
                     <h2 class="section-title">Explorar por Género: Lo-Fi</h2>
                     <div class="card-grid" id="genre-lofi-grid">
                         <div class="music-card">
-                            <div class="card-img">Lo-Fi</div>
-                            <div class="card-title">Chill Beats</div>
-                            <div class="card-subtitle">Lo-Fi Artist</div>
+                            <div class="card-img">cover</div>
+                            <div class="card-title">Nandemonaiya</div>
+                            <div class="card-artist">Kayou</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="section-wrapper">
-                    <h2 class="section-title">Explorar por Artista: Poerter Robinson</h2>
+                    <h2 class="section-title">Explorar por Artista: Porter Robinson</h2>
                     <div class="card-grid" id="artist-moeshop-grid">
                         <div class="music-card">
-                            <div class="card-img">Porter Robinson</div>
+                            <div class="card-img">cover</div>
                             <div class="card-title">Shelter</div>
-                            <div class="card-subtitle">Porter Robinson</div>
+                            <div class="card-artist">Porter Robinson</div>
                         </div>
                     </div>
                 </div>
@@ -383,15 +383,15 @@
                     let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
 
                     if (token) {
-                        const profileName = userData.name || 'Usuario';
-                        const profileEmail = userData.email || 'usuario@audiofile.com';
+                        const profileName = userData.name;
+                        const profileEmail = userData.email;
                         
                         // Generar avatar local o inicial si no existe imagen subida
                         let avatarContent = '';
                         let dropdownAvatarContent = '';
 
                         if (userData.avatar) {
-                            // Si el avatar es una ruta de archivo local almacenada en el servidor o app
+                            // Si el avatar es una ruta de archivo local almacenada (PENDIENTE)
                             avatarContent = `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">`;
                             dropdownAvatarContent = `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">`;
                         } else {
@@ -416,9 +416,9 @@
                                         </div>
                                     </div>
                                     <hr>
-                                    <a href="{{ route('profile') }}">Ver Perfil</a>
+                                        <a href="{{ route('profile') }}">Ver Perfil</a>
                                     <hr>
-                                    <button type="button" class="logout-btn" onclick="confirmLogout()">Cerrar sesión</button>
+                                    <button type="button" id="logout-btn" class="logout-btn" >Cerrar sesión</button>
                                 </div>
                             </div>
                         `;
@@ -429,7 +429,32 @@
 
                     navContainer.innerHTML = htmlLinks;
 
-                    // Cerrar el menú si se hace clic fuera de él
+                    if (token) {
+                        const logoutBtn = document.getElementById('logout-btn');
+                        if (logoutBtn) {
+                            logoutBtn.addEventListener('click', async () => {
+                                if (confirm("¿Seguro que quieres cerrar sesión?")) {
+                                    try {
+                                        const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000') }}";
+                                        await fetch(`${API_BASE_URL}/api/logout`, {
+                                            method: 'POST',
+                                            headers: {
+                                                'Accept': 'application/json',
+                                                'Authorization': `Bearer ${token}`
+                                            }
+                                        });
+                                    } catch (e) {
+                                        console.error('Error al notificar cierre de sesión al servidor', e);
+                                    } finally {
+                                        localStorage.removeItem('auth_token');
+                                        localStorage.removeItem('user_data');
+                                        window.location.href = "{{ route('login') }}";
+                                    }
+                                }
+                            });
+                        }
+                    }
+
                     document.addEventListener('click', (event) => {
                         const container = document.querySelector('.profile-menu-container');
                         const dropdown = document.getElementById('profileDropdownMenu');
@@ -444,14 +469,6 @@
                     const dropdown = document.getElementById('profileDropdownMenu');
                     if (dropdown) {
                         dropdown.classList.toggle('show');
-                    }
-                }
-
-                function confirmLogout() {
-                    if (confirm("¿Seguro que quieres cerrar sesión?")) {
-                        localStorage.removeItem('auth_token');
-                        localStorage.removeItem('user_data');
-                        window.location.href = "{{ route('login') }}";
                     }
                 }
             </script>
