@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CancionController;
 use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [CancionController::class, 'index'])->name('home');
 
 Route::get('/register', function () {
     return view('auth.register');

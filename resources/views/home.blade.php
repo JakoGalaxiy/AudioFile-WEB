@@ -9,6 +9,8 @@
             <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2.0">
             <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2.0">
 
+            <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+
             <style>
                 * { 
                     box-sizing: border-box; 
@@ -311,15 +313,30 @@
                 </div>
             </nav>
 
+            <!-- 1. Sección de Accesos Directos & Recientes -->
             <div class="container">
                 <div class="section-wrapper">
                     <h2 class="section-title">Accesos Directos & Recientes</h2>
-                    <div class="card-grid">
-                        <div class="music-card">
-                            <div class="card-img">Sin conexión</div>
-                            <div class="card-title">Cargando...</div>
-                            <div class="card-artist">Favoritos / Recientes</div>
-                        </div>
+                    <div class="card-grid" id="shortcut-grid">
+                        @forelse($recentSongs as $song)
+                            <div class="music-card" 
+                                 data-audio="{{ $song->audio_url ?? '' }}"
+                                 data-title="{{ $song->title }}"
+                                 data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                 data-cover="{{ $song->album->cover_url ?? '' }}">
+                                <div class="card-img">
+                                    <img src="{{ $song->album->cover_url ?? '' }}" alt="{{ $song->title }}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div class="card-title">{{ $song->title }}</div>
+                                <div class="card-artist">{{ $song->album->artist->stage_name ?? 'Artista' }}</div>
+                            </div>
+                        @empty
+                            <div class="music-card">
+                                <div class="card-img">Sin conexión</div>
+                                <div class="card-title">No hay canciones recientes</div>
+                                <div class="card-artist">Favoritos / Recientes</div>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -327,11 +344,15 @@
                 <div class="section-wrapper">
                     <h2 class="section-title">Lo más escuchado en la aplicación</h2>
                     <div class="card-grid" id="trending-grid">
-                        <div class="music-card">
-                            <div class="card-img">cover</div>
-                            <div class="card-title">Popular Track</div>
-                            <div class="card-artist">Artist name</div>
-                        </div>
+                        @foreach($trendingSongs as $song)
+                            <div class="music-card">
+                                <div class="card-img">
+                                    <img src="{{ $song->album->cover_url ?? '' }}" alt="{{ $song->title }}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div class="card-title">{{ $song->title }}</div>
+                                <div class="card-artist">{{ $song->album->artist->stage_name ?? 'Artist name' }}</div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
@@ -339,23 +360,37 @@
                 <div class="section-wrapper" id="for-you-section">
                     <h2 class="section-title">Para Ti (Basado en tus gustos)</h2>
                     <div class="card-grid" id="foryou-grid">
-                        <div class="music-card">
-                            <div class="card-img">cover</div>
-                            <div class="card-title">Mix Personal</div>
-                            <div class="card-artist">Artist name</div>
-                        </div>
+                        @foreach($forYouSongs as $song)
+                            <div class="music-card">
+                                <div class="card-img">
+                                    <img src="{{ $song->album->cover_url ?? '' }}" alt="{{ $song->title }}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div class="card-title">{{ $song->title }}</div>
+                                <div class="card-artist">{{ $song->album->artist->stage_name ?? 'Artist name' }}</div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
 
-                <!-- 4. Canciones en General por Género o Artistas -->
+                <!-- 4. Canciones para Descubrir / Explorar -->
                 <div class="section-wrapper">
-                    <h2 class="section-title">Explorar por Género: Lo-Fi</h2>
-                    <div class="card-grid" id="genre-lofi-grid">
-                        <div class="music-card">
-                            <div class="card-img">cover</div>
-                            <div class="card-title">Nandemonaiya</div>
-                            <div class="card-artist">Kayou</div>
-                        </div>
+                    <h2 class="section-title">Descubre Nueva Música</h2>
+                    <div class="card-grid" id="discovery-grid">
+                        @forelse($discoverySongs as $song)
+                            <div class="music-card">
+                                <div class="card-img">
+                                    <img src="{{ $song->album->cover_url ?? asset('img/default-cover.jpg') }}" alt="{{ $song->title }}" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                                <div class="card-title">{{ $song->title }}</div>
+                                <div class="card-artist">{{ $song->album->artist->stage_name ?? 'Artista desconocido' }}</div>
+                            </div>
+                        @empty
+                            <div class="music-card">
+                                <div class="card-img">Sin canciones</div>
+                                <div class="card-title">Explora nuevos sonidos</div>
+                                <div class="card-artist">Próximamente</div>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
@@ -371,87 +406,93 @@
                 </div>
             </div>
 
+            <!-- Reproductor de audio global en el Home con Video.js -->
+            <div id="audio-player-container" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #1E2433; padding: 15px 30px; display: none; align-items: center; justify-content: space-between; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); z-index: 1000;">
+                <div id="now-playing" style="font-size: 14px; color: #2CE4F5; font-weight: bold; display: flex; align-items: center; gap: 12px;">
+                    <img id="player-cover-preview" src="" alt="" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover; display: none;">
+                    <div>
+                        <div id="player-song-title">Selecciona una canción</div>
+                        <div id="player-artist-name" style="font-size: 12px; color: #6A7B92; font-weight: normal;">para reproducir</div>
+                    </div>
+                </div>
+                
+                <div style="width: 50%;">
+                    <audio id="main-audio-player" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" style="width: 100%; height: 40px;">
+                        Tu navegador no soporta el elemento de audio.
+                    </audio>
+                </div>
+            </div>
+
+            <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
+                    // 1. Lógica del menú de usuario (Navbar)
                     const token = localStorage.getItem('auth_token');
                     const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
                     const navContainer = document.getElementById('nav-links-container');
 
-                    if (!navContainer) return;
+                    if (navContainer) {
+                        const currentPath = window.location.pathname;
+                        let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
 
-                    const currentPath = window.location.pathname;
-                    let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
+                        if (token) {
+                            const profileName = userData.name;
+                            const profileEmail = userData.email;
+                            let avatarContent = userData.avatar ? `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">` : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
+                            let dropdownAvatarContent = userData.avatar ? `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">` : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;
 
-                    if (token) {
-                        const profileName = userData.name;
-                        const profileEmail = userData.email;
-                        
-                        // Generar avatar local o inicial si no existe imagen subida
-                        let avatarContent = '';
-                        let dropdownAvatarContent = '';
-
-                        if (userData.avatar) {
-                            // Si el avatar es una ruta de archivo local almacenada (PENDIENTE)
-                            avatarContent = `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">`;
-                            dropdownAvatarContent = `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">`;
+                            htmlLinks += `
+                                <div class="profile-menu-container">
+                                    <button type="button" class="profile-avatar-btn" onclick="toggleProfileMenu(event)" aria-label="Menú de usuario">
+                                        ${avatarContent}
+                                    </button>
+                                    <div class="profile-dropdown" id="profileDropdownMenu">
+                                        <div class="profile-dropdown-header">
+                                            ${dropdownAvatarContent}
+                                            <div class="dropdown-user-info">
+                                                <span class="dropdown-name">${profileName}</span>
+                                                <span class="dropdown-email">${profileEmail}</span>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                            <a href="{{ route('profile') }}">Ver Perfil</a>
+                                        <hr>
+                                        <button type="button" id="logout-btn" class="logout-btn" >Cerrar sesión</button>
+                                    </div>
+                                </div>
+                            `;
                         } else {
-                            // Fallback con la inicial del nombre si no hay foto de perfil subida
-                            const initial = profileName.charAt(0).toUpperCase();
-                            avatarContent = `<div class="profile-avatar-placeholder">${initial}</div>`;
-                            dropdownAvatarContent = `<div class="dropdown-avatar">${initial}</div>`;
+                            htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
+                            htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Regístrate</a>`;
                         }
 
-                        // Renderizar únicamente el avatar como botón interactivo
-                        htmlLinks += `
-                            <div class="profile-menu-container">
-                                <button type="button" class="profile-avatar-btn" onclick="toggleProfileMenu(event)" aria-label="Menú de usuario">
-                                    ${avatarContent}
-                                </button>
-                                <div class="profile-dropdown" id="profileDropdownMenu">
-                                    <div class="profile-dropdown-header">
-                                        ${dropdownAvatarContent}
-                                        <div class="dropdown-user-info">
-                                            <span class="dropdown-name">${profileName}</span>
-                                            <span class="dropdown-email">${profileEmail}</span>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                        <a href="{{ route('profile') }}">Ver Perfil</a>
-                                    <hr>
-                                    <button type="button" id="logout-btn" class="logout-btn" >Cerrar sesión</button>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
-                        htmlLinks += `<a href="{{ route('register') }}" class="nav-btn-action ${currentPath.includes('register') ? 'active' : ''}">Regístrate</a>`;
-                    }
+                        navContainer.innerHTML = htmlLinks;
 
-                    navContainer.innerHTML = htmlLinks;
-
-                    if (token) {
-                        const logoutBtn = document.getElementById('logout-btn');
-                        if (logoutBtn) {
-                            logoutBtn.addEventListener('click', async () => {
-                                if (confirm("¿Seguro que quieres cerrar sesión?")) {
-                                    try {
-                                        const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000') }}";
-                                        await fetch(`${API_BASE_URL}/api/logout`, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Accept': 'application/json',
-                                                'Authorization': `Bearer ${token}`
-                                            }
-                                        });
-                                    } catch (e) {
-                                        console.error('Error al notificar cierre de sesión al servidor', e);
-                                    } finally {
-                                        localStorage.removeItem('auth_token');
-                                        localStorage.removeItem('user_data');
-                                        window.location.href = "{{ route('login') }}";
+                        if (token) {
+                            const logoutBtn = document.getElementById('logout-btn');
+                            if (logoutBtn) {
+                                logoutBtn.addEventListener('click', async () => {
+                                    if (confirm("¿Seguro que quieres cerrar sesión?")) {
+                                        try {
+                                            const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000') }}";
+                                            await fetch(`${API_BASE_URL}/api/logout`, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Accept': 'application/json',
+                                                    'Authorization': `Bearer ${token}`
+                                                }
+                                            });
+                                        } catch (e) {
+                                            console.error('Error al notificar cierre de sesión al servidor', e);
+                                        } finally {
+                                            localStorage.removeItem('auth_token');
+                                            localStorage.removeItem('user_data');
+                                            window.location.href = "{{ route('login') }}";
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
                     }
 
@@ -461,6 +502,66 @@
                         if (container && dropdown && !container.contains(event.target)) {
                             dropdown.classList.remove('show');
                         }
+                    });
+
+                    // 2. Lógica del Reproductor de Audio (Video.js)
+                    const player = videojs('main-audio-player', {
+                        fluid: false,
+                        responsive: true,
+                        controlBar: {
+                            playToggle: true,
+                            volumePanel: { inline: false },
+                            currentTimeDisplay: true,
+                            timeDivider: true,
+                            durationDisplay: true,
+                            progressControl: true,
+                            fullscreenToggle: false
+                        }
+                    });
+
+                    const playerContainer = document.getElementById('audio-player-container');
+                    const playerCoverPreview = document.getElementById('player-cover-preview');
+                    const playerSongTitle = document.getElementById('player-song-title');
+                    const playerArtistName = document.getElementById('player-artist-name');
+
+                    // Asegurarnos de que el reproductor inicie oculto si no hay reproducción activa
+                    if (playerContainer) {
+                        playerContainer.style.display = 'none';
+                    }
+
+                    // Escuchar clics en las tarjetas
+                    document.querySelectorAll('.music-card').forEach(card => {
+                        card.addEventListener('click', () => {
+                            const audioUrl = card.getAttribute('data-audio');
+                            const title = card.getAttribute('data-title');
+                            const artist = card.getAttribute('data-artist');
+                            const cover = card.getAttribute('data-cover');
+
+                            console.log("Audio URL obtenida de la tarjeta:", audioUrl);
+
+                            if (!audioUrl) return;
+
+                            // Mostrar la barra inferior en el primer clic (Punto 1)
+                            if (playerContainer) {
+                                playerContainer.style.display = 'flex';
+                            }
+
+                            // Actualizar la interfaz visual con los datos reales de la tarjeta pulsada
+                            if (cover) {
+                                playerCoverPreview.src = cover;
+                                playerCoverPreview.style.display = 'block';
+                            }
+                            if (title) playerSongTitle.textContent = title;
+                            if (artist) playerArtistName.textContent = artist;
+
+                            // Cambiar la fuente de audio en Video.js y reproducir
+                            player.src({ type: 'audio/mpeg', src: audioUrl });
+                            player.ready(() => {
+                                player.play().catch(err => {
+                                    console.error("Error al reproducir el archivo multimedia:", err);
+                                });
+                            });
+                        });
                     });
                 });
 
@@ -472,5 +573,6 @@
                     }
                 }
             </script>
+
         </body>
     </html>
