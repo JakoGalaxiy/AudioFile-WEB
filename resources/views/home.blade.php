@@ -450,7 +450,8 @@
                 .video-js .vjs-play-control,
                 .video-js .vjs-current-time,
                 .video-js .vjs-duration,
-                .video-js .vjs-volume-panel {
+                .video-js .vjs-volume-panel,
+                .video-js .vjs-remaining-time {
                     display: none !important;
                 }
                 /* Forzar que Video.js actúe como una barra de progreso superior discreta */
@@ -736,7 +737,7 @@
 
                 <!-- 3. Sección Para Ti -->
                 <div class="section-wrapper" id="for-you-section">
-                    <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i>Para Ti</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Para Ti</h2>
                     <div class="card-grid" id="foryou-grid">
                         @foreach($forYouSongs as $song)
                             <div class="music-card"
