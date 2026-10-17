@@ -722,6 +722,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -744,6 +746,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -766,6 +770,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -788,6 +794,8 @@
                                 data-audio="{{ $song->audio_url ?? '' }}"
                                 data-title="{{ $song->title }}"
                                 data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                 data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
