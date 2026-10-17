@@ -59,8 +59,9 @@ class CancionController extends Controller
         $recentSongs = $mappedSongs;
         $trendingSongs = $mappedSongs;
         $forYouSongs = $mappedSongs;
-        $discoverySongs = $mappedSongs;
+        $discoveryGenre = $mappedSongs;
+        $discoveryArtist = $mappedSongs;
 
-        return view('home', compact('recentSongs', 'trendingSongs', 'forYouSongs', 'discoverySongs'));
+        return view('home', compact('recentSongs', 'trendingSongs', 'forYouSongs', 'discoveryGenre', 'discoveryArtist'));
     }
 }
