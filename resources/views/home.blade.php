@@ -519,14 +519,14 @@
                 #player-song-title {
                     font-size: 14px;
                     font-weight: bold;
-                    color: #FFFFFF;
+                    color: #F1F1F1;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                 }
                 #player-song-details {
                     font-size: 12px;
-                    color: #6A7B92;
+                    color: #AAAAAA;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -624,12 +624,16 @@
                     <i class="fa-solid fa-compact-disc"></i> AudioFile
                 </a>
                 
-                <form action="#" method="GET" class="nav-search">
-                    <input type="text" name="query" placeholder="Buscar canciones o artistas..." required>
-                    <button type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                </form>
+                <div class="nav-search-container" style="position: relative;">
+                    <form action="{{ route('search.view') }}" method="GET" class="nav-search" id="search-form">
+                        <input type="text" id="search-input" name="query" placeholder="Buscar canciones o artistas..." autocomplete="off" required>
+                        <button type="submit">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                    <!-- Menú desplegable para autocompletado en vivo -->
+                    <div class="search-suggestions-dropdown" id="search-suggestions" style="display: none; position: absolute; top: 120%; left: 0; width: 100%; background-color: #1E2433; border: 1px solid rgba(44, 228, 245, 0.2); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 105; max-height: 350px; overflow-y: auto; padding: 8px 0;"></div>
+                </div>
 
                 <div class="nav-links" id="nav-links-container">
                     <a href="{{ route('home') }}" class="nav-link-home">Inicio</a>
@@ -649,9 +653,6 @@
                         </li>
                         <li class="sidebar-item">
                             <a href="#"><i class="fa-solid fa-compass"></i> Explorar</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="#"><i class="fa-solid fa-radio"></i> Emisoras</a>
                         </li>
                     </ul>
                 </div>
@@ -695,12 +696,12 @@
                     <div class="card-grid" id="shortcut-grid">
                         @foreach($recentSongs as $song)
                             <div class="music-card" 
-                                    data-audio="{{ $song->audio_url ?? '' }}"
-                                    data-title="{{ $song->title }}"
-                                    data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
-                                    data-album="{{ $song->album->title ?? 'Álbum' }}"
-                                    data-year="{{ $song->album->release_year ?? '2026' }}"
-                                    data-cover="{{ $song->album->cover_url ?? '' }}">
+                                 data-audio="{{ $song->audio_url ?? '' }}"
+                                 data-title="{{ $song->title }}"
+                                 data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                 data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                 data-year="{{ $song->album->release_year ?? '2026' }}"
+                                 data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
                                     <div class="play-overlay"><i class="fa-solid fa-play"></i></div>
@@ -722,8 +723,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
-                                data-album="{{ $song->album->title ?? 'Álbum' }}"
-                                data-year="{{ $song->album->release_year ?? '2026' }}"
+                                 data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                 data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -746,8 +747,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
-                                data-album="{{ $song->album->title ?? 'Álbum' }}"
-                                data-year="{{ $song->album->release_year ?? '2026' }}"
+                                 data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                 data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -770,8 +771,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
-                                data-album="{{ $song->album->title ?? 'Álbum' }}"
-                                data-year="{{ $song->album->release_year ?? '2026' }}"
+                                 data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                 data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -791,12 +792,12 @@
                     <div class="card-grid" id="artist-grid">
                         @foreach($discoveryArtist as $song)
                             <div class="music-card"
-                                data-audio="{{ $song->audio_url ?? '' }}"
-                                data-title="{{ $song->title }}"
-                                data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
-                                data-album="{{ $song->album->title ?? 'Álbum' }}"
-                                data-year="{{ $song->album->release_year ?? '2026' }}"
-                                data-cover="{{ $song->album->cover_url ?? '' }}">
+                                 data-audio="{{ $song->audio_url ?? '' }}"
+                                 data-title="{{ $song->title }}"
+                                 data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                 data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                 data-year="{{ $song->album->release_year ?? '2026' }}"
+                                 data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
                                     <div class="play-overlay"><i class="fa-solid fa-play"></i></div>
@@ -857,7 +858,7 @@
 
             <script>
                 document.addEventListener("DOMContentLoaded", () => {
-                    // ógica del menú de usuario (Navbar)
+                    // Lógica del menú de usuario (Navbar)
                     const token = localStorage.getItem('auth_token');
                     const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
                     const navContainer = document.getElementById('nav-links-container');

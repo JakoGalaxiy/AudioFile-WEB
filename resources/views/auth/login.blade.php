@@ -8,6 +8,8 @@
             <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2.0">
             <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2.0">
 
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
             <style>
                 * {
                     box-sizing: border-box;
@@ -97,6 +99,16 @@
                     margin: 0 0 10px 0;
                     font-size: 26px;
                     font-weight: 700;
+                }
+                /* Estilo para el Logo AudioFile */
+                .login-logo {
+                    width: 80px;
+                    height: 80px;
+                    object-fit: cover;
+                    border-radius: 50%;
+                    margin: 0 auto 16px auto;
+                    display: block;
+                    box-shadow: 0 4px 15px rgba(44, 228, 245, 0.2);
                 }
                 .subtitle {
                     text-align: center;
@@ -192,16 +204,16 @@
 
             <!-- Barra de Navegación Global -->
             <nav class="navbar">
-                <a href="{{ route('home') }}" class="nav-brand">AudioFile</a>
-                <div class="nav-links" id="nav-links-container">
-                    <a href="{{ route('home') }}" class="nav-link-home">Inicio</a>
-                </div>
+                <a href="{{ route('home') }}" class="nav-brand">
+                    <i class="fa-solid fa-compact-disc"></i> AudioFile
+                </a>
             </nav>
 
             <!-- Contenedor principal que centra la tarjeta -->
             <div class="main-content">
                 <div class="login-card">
-                     <h2>¡Hola de nuevo!</h2>
+                    <img src="{{ asset('images/AudioFile.jpeg') }}" alt="AudioFile Logo" class="login-logo">
+                    <h2>¡Hola de nuevo!</h2>
                     <div class="subtitle">Inicia sesión para continuar</div>
                         
                     <div id="error-alert" class="error-alert"></div>
@@ -241,7 +253,7 @@
                     e.preventDefault();
                     errorAlert.style.display = 'none';
                     submitBtn.disabled = true;
-                    submitBtn.textContent = 'Processing...';
+                    submitBtn.textContent = 'Cargando...';
 
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
