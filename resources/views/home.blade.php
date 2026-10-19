@@ -450,7 +450,8 @@
                 .video-js .vjs-play-control,
                 .video-js .vjs-current-time,
                 .video-js .vjs-duration,
-                .video-js .vjs-volume-panel {
+                .video-js .vjs-volume-panel,
+                .video-js .vjs-remaining-time {
                     display: none !important;
                 }
                 /* Forzar que Video.js actúe como una barra de progreso superior discreta */
@@ -721,6 +722,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -736,13 +739,15 @@
 
                 <!-- 3. Sección Para Ti -->
                 <div class="section-wrapper" id="for-you-section">
-                    <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i>Para Ti</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> Para Ti</h2>
                     <div class="card-grid" id="foryou-grid">
                         @foreach($forYouSongs as $song)
                             <div class="music-card"
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -765,6 +770,8 @@
                                  data-audio="{{ $song->audio_url ?? '' }}"
                                  data-title="{{ $song->title }}"
                                  data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                  data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>
@@ -787,6 +794,8 @@
                                 data-audio="{{ $song->audio_url ?? '' }}"
                                 data-title="{{ $song->title }}"
                                 data-artist="{{ $song->album->artist->stage_name ?? 'Artista' }}"
+                                data-album="{{ $song->album->title ?? 'Álbum' }}"
+                                data-year="{{ $song->album->release_year ?? '2026' }}"
                                 data-cover="{{ $song->album->cover_url ?? '' }}">
                                 <div class="card-img-wrapper" style="position: relative;">
                                     <div class="card-img" style="display: none;"><i class="fa-solid fa-bolt text-2xl"></i></div>

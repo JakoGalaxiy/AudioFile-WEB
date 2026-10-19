@@ -22,6 +22,8 @@
 Homestead.json
 Homestead.yaml
 auth.json
+/public/fonts-manifest.dev.json
+/public/*.dev.json
 
 .env
 .env.*
