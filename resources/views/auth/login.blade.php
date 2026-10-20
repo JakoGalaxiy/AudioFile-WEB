@@ -274,10 +274,11 @@
                             throw new Error(data.message || 'Credenciales incorrectas.');
                         }
 
-                        localStorage.setItem('auth_token', data.access_token);
+                        const tokenToSave = data.token || data.access_token;
+                        localStorage.setItem('auth_token', tokenToSave);
                         localStorage.setItem('user_data', JSON.stringify(data.user));
 
-                        window.location.href = '/';
+                        window.location.href = "{{ route('home') }}";
 
                     } catch (error) {
                         errorAlert.textContent = error.message;
@@ -286,25 +287,13 @@
                         submitBtn.textContent = 'Iniciar sesión';
                     }
                 });
-            </script>
 
-            <script>
                 document.addEventListener("DOMContentLoaded", () => {
                     const token = localStorage.getItem('auth_token');
-                    const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-                    const navContainer = document.getElementById('nav-links-container');
 
-                    if (!navContainer) return;
-
-                    const currentPath = window.location.pathname;
-
-                    let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
-
-                    if (token) {
+                    if (token && token !== 'undefined') {
                         window.location.href = "{{ route('home') }}";
                     }
-
-                    navContainer.innerHTML = htmlLinks;
                 });
             </script>
 
