@@ -56,6 +56,7 @@
                 }
                 .nav-links a:hover, .nav-links a.active {
                     color: #FFFFFF;
+                    scale: 1.05;
                 }
                 .nav-btn-action {
                     background: linear-gradient(to right, #2CE4F5, #67F4CE);
@@ -66,6 +67,7 @@
                 }
                 .nav-btn-action:hover {
                     opacity: 0.9;
+                    scale: 1.1;
                 }
                 /* Estilos de la barra de búsqueda */
                 .nav-search {
@@ -102,6 +104,126 @@
                 .nav-search button:hover {
                     color: #2CE4F5;
                 }
+                /* Estilos del Dropdown del Buscador */
+                .search-suggestions-dropdown {
+                    display: none;
+                    position: absolute;
+                    top: calc(100% + 8px);
+                    left: 0;
+                    width: 100%;
+                    min-width: 320px;
+                    background-color: #181C27;
+                    border: 1px solid rgba(44, 228, 245, 0.25);
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+                    z-index: 1000;
+                    max-height: 420px;
+                    overflow-y: auto;
+                    padding: 8px 0;
+                }
+                .search-suggestions-dropdown.show { 
+                    display: block;
+                }
+                .suggestion-item {
+                    padding: 8px 14px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    color: #FFFFFF;
+                    text-decoration: none;
+                    font-size: 13px;
+                    cursor: pointer;
+                    transition: background-color 0.2s;
+                }
+                .suggestion-item:hover { background-color: #252D42; }
+                /* Formatos de los distintos tipos de sugerencias */
+                .suggestion-icon {
+                    color: #6A7B92;
+                    font-size: 14px;
+                    width: 20px;
+                    text-align: center;
+                }
+                .suggestion-thumb {
+                    width: 38px;
+                    height: 38px;
+                    border-radius: 4px;
+                    object-fit: cover;
+                    background-color: #252D42;
+                    flex-shrink: 0;
+                }
+                .suggestion-thumb.circle { 
+                    border-radius: 50%; 
+                }
+                
+                .suggestion-info {
+                    display: flex;
+                    flex-direction: column;
+                    overflow: hidden;
+                    flex: 1;
+                }
+                .suggestion-title {
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #FFFFFF;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .suggestion-title strong { color: #2CE4F5; }
+                .suggestion-subtitle {
+                    font-size: 11px;
+                    color: #6A7B92;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    margin-top: 2px;
+                }
+                /* Estilos del Avatar y Menú Desplegable */
+                .profile-menu-container { position: relative; display: inline-block; }
+                .profile-avatar-btn {
+                    background: transparent;
+                    border: 2px solid rgba(44, 228, 245, 0.4);
+                    border-radius: 50%;
+                    padding: 0;
+                    cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    transition: border-color 0.2s, transform 0.2s;
+                }
+                .profile-avatar-btn:hover { border-color: #2CE4F5; transform: scale(1.05); }
+                .profile-avatar-img, .profile-avatar-placeholder {
+                    width: 100%; height: 100%; object-fit: cover; display: flex;
+                    align-items: center; justify-content: center; background-color: #2CE4F5;
+                    color: #13161F; font-weight: bold; font-size: 15px;
+                }
+                .profile-dropdown {
+                    display: none; position: absolute; right: 0; top: 120%;
+                    background-color: #1E2433; border: 1px solid rgba(44, 228, 245, 0.2);
+                    border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                    min-width: 240px; z-index: 101; padding: 12px 0;
+                }
+                .profile-dropdown.show { display: block; }
+                .profile-dropdown-header { padding: 8px 16px 12px 16px; display: flex; align-items: center; gap: 12px; }
+                .dropdown-avatar {
+                    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+                    background-color: #2CE4F5; color: #13161F; display: flex;
+                    align-items: center; justify-content: center; font-weight: bold;
+                }
+                .dropdown-user-info { display: flex; flex-direction: column; overflow: hidden; }
+                .dropdown-name { font-size: 14px; font-weight: bold; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                .dropdown-email { font-size: 12px; color: #6A7B92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+                .profile-dropdown hr { border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 4px 0; }
+                .profile-dropdown a, .profile-dropdown button {
+                    display: block; width: 100%; padding: 8px 16px; color: #6A7B92; text-decoration: none;
+                    font-size: 13px; background: none; border: none; text-align: left; cursor: pointer; transition: background-color 0.2s, color 0.2s;
+                }
+                .profile-dropdown a:hover, .profile-dropdown button:hover { background-color: #252D42; color: #FFFFFF; }
+                .logout-btn { color: #ff5c5c !important; }
+                .logout-btn:hover { background-color: rgba(255, 92, 92, 0.1) !important; }
                 /* Estilos del Avatar y Menú Desplegable */
                 .profile-menu-container {
                     position: relative;
@@ -632,12 +754,10 @@
                         </button>
                     </form>
                     <!-- Menú desplegable para autocompletado en vivo -->
-                    <div class="search-suggestions-dropdown" id="search-suggestions" style="display: none; position: absolute; top: 120%; left: 0; width: 100%; background-color: #1E2433; border: 1px solid rgba(44, 228, 245, 0.2); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 105; max-height: 350px; overflow-y: auto; padding: 8px 0;"></div>
+                    <div class="search-suggestions-dropdown" id="search-suggestions"></div>
                 </div>
 
-                <div class="nav-links" id="nav-links-container">
-                    <a href="{{ route('home') }}" class="nav-link-home">Inicio</a>
-                </div>
+                <div class="nav-links" id="nav-links-container"></div>
             </nav>
 
             <!-- 2. Cuerpo Principal de 2 Columnas -->
@@ -857,19 +977,33 @@
             <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 
             <script>
+                // Corregir portadas locales / relativas
+                const resolveImageUrl = (url) => {
+                    if (!url) return '';
+                    if (url.startsWith('http://localhost/img/') || url.startsWith('http://localhost/storage/')) {
+                        return url.replace('http://localhost/', 'http://localhost:8000/');
+                    }
+                    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+                    
+                    const cleanBase = API_BASE_URL.replace(/\/api\/?$/, '');
+                    return `${cleanBase}${url.startsWith('/') ? '' : '/'}${url}`;
+                };
+
+                // Lógica del menú de usuario (Navbar)
                 document.addEventListener("DOMContentLoaded", () => {
-                    // Lógica del menú de usuario (Navbar)
                     const token = localStorage.getItem('auth_token');
+                    const isValidToken = token && token !== 'undefined' && token !== 'null';
+                    const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000/api') }}";
                     const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
                     const navContainer = document.getElementById('nav-links-container');
 
                     if (navContainer) {
                         const currentPath = window.location.pathname;
-                        let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
+                        let htmlLinks = '';
 
-                        if (token) {
-                            const profileName = userData.name;
-                            const profileEmail = userData.email;
+                        if (isValidToken) {
+                            const profileName = userData.name || 'Usuario';
+                            const profileEmail = userData.email || '';
                             let avatarContent = userData.avatar ? `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">` : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
                             let dropdownAvatarContent = userData.avatar ? `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">` : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;
 
@@ -887,9 +1021,9 @@
                                             </div>
                                         </div>
                                         <hr>
-                                            <a href="{{ route('profile') }}">Ver Perfil</a>
+                                        <a href="{{ route('profile') }}">Ver Perfil</a>
                                         <hr>
-                                        <button type="button" id="logout-btn" class="logout-btn" >Cerrar sesión</button>
+                                        <button type="button" id="logout-btn" class="logout-btn">Cerrar sesión</button>
                                     </div>
                                 </div>
                             `;
@@ -900,14 +1034,13 @@
 
                         navContainer.innerHTML = htmlLinks;
 
-                        if (token) {
+                        if (isValidToken) {
                             const logoutBtn = document.getElementById('logout-btn');
                             if (logoutBtn) {
                                 logoutBtn.addEventListener('click', async () => {
                                     if (confirm("¿Seguro que quieres cerrar sesión?")) {
                                         try {
-                                            const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000') }}";
-                                            await fetch(`${API_BASE_URL}/api/logout`, {
+                                            await fetch(`${API_BASE_URL}/logout`, {
                                                 method: 'POST',
                                                 headers: {
                                                     'Accept': 'application/json',
@@ -934,6 +1067,141 @@
                             dropdown.classList.remove('show');
                         }
                     });
+                
+                    // Lógica del Autocompletar / Sugerencias (Sincronizado estilo YouTube Music)
+                    const searchInput = document.getElementById('search-input');
+                    const searchSuggestions = document.getElementById('search-suggestions');
+                    let debounceTimer;
+
+                    if (searchInput && searchSuggestions) {
+                        searchInput.addEventListener('input', function () {
+                            const query = this.value.trim();
+                            clearTimeout(debounceTimer);
+
+                            if (query.length < 2) {
+                                searchSuggestions.classList.remove('show');
+                                searchSuggestions.innerHTML = '';
+                                return;
+                            }
+
+                            debounceTimer = setTimeout(() => {
+                                const headers = { 'Accept': 'application/json' };
+                                if (isValidToken) {
+                                    headers['Authorization'] = 'Bearer ' + token;
+                                }
+
+                                fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`, { headers })
+                                .then(res => res.json())
+                                .then(data => {
+                                    const songs = data.songs || data[0] || [];
+                                    const artists = data.artists || data[1] || [];
+
+                                    if (songs.length === 0 && artists.length === 0) {
+                                        searchSuggestions.classList.remove('show');
+                                        return;
+                                    }
+
+                                    let html = '';
+
+                                    // 1. Sugerencias rápidas de texto
+                                    const textSuggestions = new Set();
+                                    songs.slice(0, 3).forEach(s => textSuggestions.add(s.title));
+                                    artists.slice(0, 2).forEach(a => textSuggestions.add(a.stage_name));
+
+                                    textSuggestions.forEach(text => {
+                                        const highlighted = highlightMatch(text, query);
+                                        html += `
+                                            <div class="suggestion-item" onclick="selectSearchQuery('${text.replace(/'/g, "\\'")}')">
+                                                <i class="fa-solid fa-magnifying-glass suggestion-icon"></i>
+                                                <div class="suggestion-info">
+                                                    <div class="suggestion-title">${highlighted}</div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    });
+
+                                    // 2. Resultados directos: ARTISTAS
+                                    artists.slice(0, 2).forEach(artist => {
+                                        const nameHighlighted = highlightMatch(artist.stage_name, query);
+                                        const firstLetter = artist.stage_name.charAt(0).toUpperCase();
+                                        html += `
+                                            <div class="suggestion-item" onclick="selectSearchQuery('${artist.stage_name.replace(/'/g, "\\'")}')">
+                                                <div class="suggestion-thumb circle" style="display:flex; align-items:center; justify-content:center; background:#2CE4F5; color:#13161F; font-weight:bold;">
+                                                    ${firstLetter}
+                                                </div>
+                                                <div class="suggestion-info">
+                                                    <div class="suggestion-title">${nameHighlighted}</div>
+                                                    <div class="suggestion-subtitle">Artista</div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    });
+
+                                    // 3. Resultados directos: CANCIONES
+                                    songs.slice(0, 4).forEach(song => {
+                                        const titleHighlighted = highlightMatch(song.title, query);
+                                        const rawCover = song.album?.cover_url || '';
+                                        const cover = resolveImageUrl(rawCover);
+                                        const artistName = song.album?.artist?.stage_name || 'Artista';
+
+                                        html += `
+                                            <div class="suggestion-item" onclick="playSongFromSuggestion('${song.audio_url || ''}', '${song.title.replace(/'/g, "\\'")}', '${artistName.replace(/'/g, "\\'")}', '${(song.album?.title || '').replace(/'/g, "\\'")}', '${song.album?.release_year || '2026'}', '${cover}')">
+                                                ${cover ? `<img src="${cover}" class="suggestion-thumb" alt="${song.title}" onerror="this.style.display='none'">` : `<div class="suggestion-thumb" style="background:#252D42;"></div>`}
+                                                <div class="suggestion-info">
+                                                    <div class="suggestion-title">${titleHighlighted}</div>
+                                                    <div class="suggestion-subtitle">Canción • ${artistName}</div>
+                                                </div>
+                                            </div>
+                                        `;
+                                    });
+
+                                    searchSuggestions.innerHTML = html;
+                                    searchSuggestions.classList.add('show');
+                                })
+                                .catch(err => {
+                                    console.error("Error al obtener sugerencias:", err);
+                                    searchSuggestions.classList.remove('show');
+                                });
+                            }, 300);
+                        });
+
+                        document.addEventListener('click', (e) => {
+                            if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+                                searchSuggestions.classList.remove('show');
+                            }
+                        });
+                    }
+
+                    function highlightMatch(text, query) {
+                        const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        return text.replace(regex, '<strong>$1</strong>');
+                    }
+
+                    window.selectSearchQuery = function (term) {
+                        if (searchInput) searchInput.value = term;
+                        if (searchSuggestions) searchSuggestions.classList.remove('show');
+                        document.getElementById('search-form').submit();
+                    };
+
+                    window.playSongFromSuggestion = function (audioUrl, title, artist, album, year, cover) {
+                        if (searchSuggestions) searchSuggestions.classList.remove('show');
+                        if (!audioUrl) return;
+
+                        playerContainer.style.display = 'flex';
+                        if (cover) {
+                            playerCoverPreview.src = cover;
+                            playerCoverPreview.style.display = 'block';
+                        }
+                        playerSongTitle.textContent = title;
+                        playerSongDetails.textContent = `${artist} • ${album} • ${year}`;
+
+                        player.src({ type: 'audio/mpeg', src: audioUrl });
+                        player.ready(() => {
+                            player.play().then(() => {
+                                playPauseIcon.className = "fa-solid fa-pause";
+                            }).catch(err => console.error("Error al reproducir:", err));
+                        });
+                    };
 
                     // Lógica del Reproductor de Audio (Video.js)
                     const player = videojs('main-audio-player', {
