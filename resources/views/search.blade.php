@@ -519,8 +519,8 @@
                 .then(data => {
                     document.getElementById('search-loading').style.display = 'none';
 
-                    const songs = data.songs || [];
-                    const artists = data.artists || [];
+                    const songs = data[0] || [];
+                    const artists = data[1] || [];
 
                     if (songs.length === 0 && artists.length === 0) {
                         document.getElementById('no-results').style.display = 'block';
