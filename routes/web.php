@@ -23,3 +23,7 @@ Route::get('/search', function (Request $request) {
     $query = $request->input('query');
     return view('search', compact('query'));
 })->name('search.view');
+
+Route::get('/admin', function () {
+    return view('admin.dashboard');
+})->name('admin.dashboard');
