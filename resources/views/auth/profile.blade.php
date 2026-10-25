@@ -268,7 +268,7 @@
 
                     if (navContainer) {
                         const currentPath = window.location.pathname;
-                        let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
+                        let htmlLinks = '';
 
                         if (token) {
                             const profileName = userDataNav.username || 'Mi Perfil';

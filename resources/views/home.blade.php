@@ -1004,8 +1004,14 @@
                         if (isValidToken) {
                             const profileName = userData.username || 'Usuario';
                             const profileEmail = userData.email || '';
-                            let avatarContent = userData.avatar ? `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">` : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
-                            let dropdownAvatarContent = userData.avatar ? `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">` : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;
+                            const avatarUrl = userData.avatar_url || userData.avatar;
+                            // Renderizar la imagen de avatar_url
+                            let avatarContent = avatarUrl 
+                                ? `<img src="${avatarUrl}" class="profile-avatar-img" alt="Avatar">` 
+                                : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
+                            let dropdownAvatarContent = avatarUrl 
+                                ? `<img src="${avatarUrl}" class="dropdown-avatar" alt="Avatar">` 
+                                : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;
 
                             htmlLinks += `
                                 <div class="profile-menu-container">
