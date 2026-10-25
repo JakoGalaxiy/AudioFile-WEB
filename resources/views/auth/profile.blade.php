@@ -305,14 +305,14 @@
                     const password = document.getElementById('password').value;
                     const password_confirmation = document.getElementById('password_confirmation').value;
 
-                    const bodyData = { name, email };
+                    const bodyData = { username, email };
                     if (password) {
                         bodyData.password = password;
                         bodyData.password_confirmation = password_confirmation;
                     }
 
                     try {
-                        const response = await fetch(`${API_BASE_URL}/api/profile`, {
+                        const response = await fetch(`${API_BASE_URL}/api/user`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -335,7 +335,7 @@
 
                         // Actualizar el texto del badge de perfil en la navbar si existe
                         const badge = document.querySelector('.profile-badge');
-                        if(badge && bodyData.name) badge.textContent = `${bodyData.username}`;
+                        if(badge && bodyData.username) badge.textContent = `${bodyData.username}`;
 
                     } catch (error) {
                         errorAlert.textContent = error.message;
