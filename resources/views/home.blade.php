@@ -884,7 +884,7 @@
 
                 <!-- 4. Canciones por Género -->
                 <div class="section-wrapper">
-                    <h2 class="section-title"><i class="fa-solid fa-headphones"></i> Explorar por Género: PENDIENTE</h2>
+                    <h2 class="section-title"><i class="fa-solid fa-headphones"></i> Explorar por Género: {{ $discoveryGenre->first()->album->genres->name ?? 'Género' }}</h2>
                     <div class="card-grid" id="genre-grid">
                         @foreach($discoveryGenre as $song)
                             <div class="music-card"
@@ -1002,7 +1002,7 @@
                         let htmlLinks = '';
 
                         if (isValidToken) {
-                            const profileName = userData.name || 'Usuario';
+                            const profileName = userData.username || 'Usuario';
                             const profileEmail = userData.email || '';
                             let avatarContent = userData.avatar ? `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">` : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
                             let dropdownAvatarContent = userData.avatar ? `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">` : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;

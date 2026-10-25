@@ -432,7 +432,7 @@
                 let htmlLinks = '';
 
                 if (token) {
-                    const profileName = userData.name || 'Usuario';
+                    const profileName = userData.username || 'Usuario';
                     const profileEmail = userData.email || '';
                     let avatarContent = userData.avatar ? `<img src="${userData.avatar}" class="profile-avatar-img" alt="Avatar">` : `<div class="profile-avatar-placeholder">${profileName.charAt(0).toUpperCase()}</div>`;
                     let dropdownAvatarContent = userData.avatar ? `<img src="${userData.avatar}" class="dropdown-avatar" alt="Avatar">` : `<div class="dropdown-avatar">${profileName.charAt(0).toUpperCase()}</div>`;

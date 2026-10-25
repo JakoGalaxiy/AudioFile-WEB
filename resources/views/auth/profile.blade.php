@@ -271,7 +271,7 @@
                         let htmlLinks = `<a href="{{ route('home') }}" class="${currentPath === '/' ? 'active' : ''}">Inicio</a>`;
 
                         if (token) {
-                            const profileName = userDataNav.name || 'Mi Perfil';
+                            const profileName = userDataNav.username || 'Mi Perfil';
                             htmlLinks += `<a href="{{ route('profile') }}" class="profile-badge ${currentPath.includes('profile') ? 'active' : ''}">${profileName}</a>`;
                         } else {
                             htmlLinks += `<a href="{{ route('login') }}" class="${currentPath.includes('login') ? 'active' : ''}">Iniciar sesión</a>`;
@@ -283,7 +283,7 @@
 
                 // Cargar datos del usuario almacenados al iniciar sesión en el formulario
                 const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-                if (userData.name) document.getElementById('name').value = userData.name;
+                if (userData.username) document.getElementById('name').value = userData.username;
                 if (userData.email) document.getElementById('email').value = userData.email;
 
                 const profileForm = document.getElementById('profile-form');
@@ -300,7 +300,7 @@
                     updateBtn.disabled = true;
                     updateBtn.textContent = 'Updating...';
 
-                    const name = document.getElementById('name').value;
+                    const username = document.getElementById('name').value;
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
                     const password_confirmation = document.getElementById('password_confirmation').value;
@@ -335,7 +335,7 @@
 
                         // Actualizar el texto del badge de perfil en la navbar si existe
                         const badge = document.querySelector('.profile-badge');
-                        if(badge && bodyData.name) badge.textContent = `${bodyData.name}`;
+                        if(badge && bodyData.name) badge.textContent = `${bodyData.username}`;
 
                     } catch (error) {
                         errorAlert.textContent = error.message;
