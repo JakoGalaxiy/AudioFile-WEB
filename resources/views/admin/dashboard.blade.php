@@ -21,7 +21,6 @@
             height: 100vh;
             overflow: hidden;
         }
-
         /* Sidebar Administrador */
         .admin-sidebar {
             width: 260px;
@@ -81,7 +80,6 @@
             background: linear-gradient(to right, #2CE4F5, #67F4CE);
             font-weight: bold;
         }
-
         /* Área de Contenido Principal */
         .admin-main {
             flex: 1;
@@ -89,7 +87,6 @@
             flex-direction: column;
             overflow-y: auto;
         }
-
         /* Header Superior Admin */
         .admin-header {
             background-color: #1E2433;
@@ -119,7 +116,6 @@
             justify-content: center;
             font-weight: bold;
         }
-
         /* Vistas / Secciones */
         .content-section {
             padding: 30px 40px;
@@ -128,7 +124,6 @@
         .content-section.active {
             display: block;
         }
-
         /* Barra de Herramientas y Tablas */
         .section-toolbar {
             display: flex;
@@ -169,7 +164,6 @@
             transition: opacity 0.2s;
         }
         .btn-action-primary:hover { opacity: 0.9; }
-
         /* Estilos de Tabla */
         .data-table-wrapper {
             background-color: #1E2433;
@@ -201,7 +195,6 @@
         table.data-table tr:hover {
             background-color: rgba(37, 45, 66, 0.5);
         }
-
         /* Badges de Estado */
         .badge {
             padding: 5px 12px;
@@ -213,7 +206,6 @@
         .badge-pending { background-color: rgba(255, 193, 7, 0.15); color: #FFC107; border: 1px solid rgba(255, 193, 7, 0.3); }
         .badge-approved { background-color: rgba(44, 228, 245, 0.15); color: #2CE4F5; border: 1px solid rgba(44, 228, 245, 0.3); }
         .badge-rejected { background-color: rgba(255, 75, 75, 0.15); color: #FF4B4B; border: 1px solid rgba(255, 75, 75, 0.3); }
-
         /* Botones de Acción de Fila */
         .btn-table-action {
             background: transparent;
@@ -228,7 +220,6 @@
         .btn-approve:hover { background-color: rgba(103, 244, 206, 0.1); }
         .btn-reject { color: #FF4B4B; }
         .btn-reject:hover { background-color: rgba(255, 75, 75, 0.1); }
-
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;

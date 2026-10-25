@@ -201,6 +201,28 @@
         .sidebar-item a:hover { color: #FFFFFF; background-color: rgba(30, 36, 51, 0.8); }
         .btn-create-playlist { width: 100%; background-color: rgba(30, 36, 51, 0.7); border: 1px dashed rgba(44, 228, 245, 0.3); color: #2CE4F5; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
+        /* Estilos para le etiqueta de ADMIN */
+        .admin-brand {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2CE4F5;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding-left: 10px;
+        }
+        .admin-badge-tag {
+            font-size: 11px;
+            background: rgba(44, 228, 245, 0.2);
+            color: #2CE4F5;
+            border: 1px solid rgba(44, 228, 245, 0.4);
+            padding: 2px 6px;
+            border-radius: 4px;
+           font-weight: bold;
+        }
+
         .main-content { flex: 1; overflow-y: auto; padding: 30px 40px 100px 40px; }
         h2.section-title { font-size: 22px; margin-bottom: 15px; font-weight: 700; border-left: 4px solid #2CE4F5; padding-left: 10px; }
         
@@ -300,6 +322,20 @@
     <!-- 2. Cuerpo Principal -->
     <div class="app-body">
         <aside class="sidebar">
+            <!-- Etiqueta de ADMIN y botón de Panel de Administrador -->
+            <div id="admin-sidebar-option" style="display: none;">
+                <div class="sidebar-group-title">Administración</div>
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item" style="background: rgba(44, 228, 245, 0.1); border-radius: 8px;">
+                        <a href="{{ route('admin.dashboard') }}" class="admin-brand" style="margin-bottom: 0; padding: 10px 12px; font-size: 14px;">
+                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                            <span>Dashboard</span>
+                            <span class="admin-badge-tag">ADMIN</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
             <div>
                 <div class="sidebar-group-title">Menú Principal</div>
                 <ul class="sidebar-menu">
@@ -423,10 +459,28 @@
 
             // Lógica del menú de usuario (Navbar)
             const token = localStorage.getItem('auth_token');
+            const isValidToken = token && token !== 'undefined' && token !== 'null';
             const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
 
             // --- Lógica del menú de usuario (Navbar) ---
             const navContainer = document.getElementById('nav-links-container');
+
+            // Verificar si el usuario es Administrador (role_id === 3)
+            const isAdmin = userData.role_id === 3;
+
+            // Mostrar la opción del Dashboard en el Sidebar lateral si es Admin
+            const adminSidebarOption = document.getElementById('admin-sidebar-option');
+            if (adminSidebarOption && isValidToken && isAdmin) {
+                adminSidebarOption.style.display = 'block';
+            }
+            // Opcional: Agregar Badge de ADMIN junto a la marca del Navbar si es Admin
+            if (isValidToken && isAdmin) {
+                const navBrand = document.querySelector('.nav-brand');
+                if (navBrand && !navBrand.querySelector('.admin-badge-tag')) {
+                    navBrand.innerHTML += ` <span class="admin-badge-tag" style="font-size: 10px; background: rgba(44, 228, 245, 0.2); color: #2CE4F5; border: 1px solid rgba(44, 228, 245, 0.4); padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle;">ADMIN</span>`;
+                }
+            }
+
             if (navContainer) {
                 const currentPath = window.location.pathname;
                 let htmlLinks = '';

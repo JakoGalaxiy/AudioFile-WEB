@@ -154,7 +154,6 @@
                 .suggestion-thumb.circle { 
                     border-radius: 50%; 
                 }
-                
                 .suggestion-info {
                     display: flex;
                     flex-direction: column;
@@ -195,11 +194,6 @@
                     transition: border-color 0.2s, transform 0.2s;
                 }
                 .profile-avatar-btn:hover { border-color: #2CE4F5; transform: scale(1.05); }
-                .profile-avatar-img, .profile-avatar-placeholder {
-                    width: 100%; height: 100%; object-fit: cover; display: flex;
-                    align-items: center; justify-content: center; background-color: #2CE4F5;
-                    color: #13161F; font-weight: bold; font-size: 15px;
-                }
                 .profile-dropdown {
                     display: none; position: absolute; right: 0; top: 120%;
                     background-color: #1E2433; border: 1px solid rgba(44, 228, 245, 0.2);
@@ -429,6 +423,7 @@
                     background-color: rgba(44, 228, 245, 0.15);
                     border-color: #2CE4F5;
                 }
+                /* Estilos para le etiqueta de ADMIN */
                 .admin-brand {
                     font-size: 20px;
                     font-weight: bold;
