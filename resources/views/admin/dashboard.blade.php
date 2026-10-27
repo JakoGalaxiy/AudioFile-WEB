@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - AudioFile</title>
-    
+
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2.0">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2.0">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
         body {
             background-color: #13161F;
             color: #FFFFFF;
@@ -130,6 +131,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
+            gap: 15px;
         }
         .search-box {
             background-color: #151924;
@@ -163,7 +165,9 @@
             gap: 8px;
             transition: opacity 0.2s;
         }
-        .btn-action-primary:hover { opacity: 0.9; }
+        .btn-action-primary:hover {
+            opacity: 0.9;
+        }
         /* Estilos de Tabla */
         .data-table-wrapper {
             background-color: #1E2433;
@@ -203,9 +207,21 @@
             font-weight: bold;
             display: inline-block;
         }
-        .badge-pending { background-color: rgba(255, 193, 7, 0.15); color: #FFC107; border: 1px solid rgba(255, 193, 7, 0.3); }
-        .badge-approved { background-color: rgba(44, 228, 245, 0.15); color: #2CE4F5; border: 1px solid rgba(44, 228, 245, 0.3); }
-        .badge-rejected { background-color: rgba(255, 75, 75, 0.15); color: #FF4B4B; border: 1px solid rgba(255, 75, 75, 0.3); }
+        .badge-pending {
+            background-color: rgba(255, 193, 7, 0.15);
+            color: #FFC107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        .badge-approved {
+            background-color: rgba(44, 228, 245, 0.15);
+            color: #2CE4F5;
+            border: 1px solid rgba(44, 228, 245, 0.3);
+        }
+        .badge-rejected {
+            background-color: rgba(255, 75, 75, 0.15);
+            color: #FF4B4B;
+            border: 1px solid rgba(255, 75, 75, 0.3);
+        }
         /* Botones de Acción de Fila */
         .btn-table-action {
             background: transparent;
@@ -216,14 +232,25 @@
             border-radius: 4px;
             transition: background-color 0.2s;
         }
-        .btn-approve { color: #67F4CE; }
-        .btn-approve:hover { background-color: rgba(103, 244, 206, 0.1); }
-        .btn-reject { color: #FF4B4B; }
-        .btn-reject:hover { background-color: rgba(255, 75, 75, 0.1); }
+        .btn-approve {
+            color: #67F4CE;
+        }
+        .btn-approve:hover {
+            background-color: rgba(103, 244, 206, 0.1);
+        }
+        .btn-reject {
+            color: #FF4B4B;
+        }
+        .btn-reject:hover {
+            background-color: rgba(255, 75, 75, 0.1);
+        }
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             display: none;
             justify-content: center;
@@ -239,7 +266,11 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 1px solid rgba(44, 228, 245, 0.2);
         }
-        .modal-card h3 { margin-top: 0; font-size: 20px; color: #FFF; }
+        .modal-card h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #FFF;
+        }
         .modal-card textarea {
             width: 100%;
             background-color: #151924;
@@ -253,8 +284,14 @@
             outline: none;
             margin: 15px 0;
         }
-        .modal-card textarea:focus { border-color: #2CE4F5; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+        .modal-card textarea:focus {
+            border-color: #2CE4F5;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
         .btn-secondary {
             background-color: transparent;
             color: #A0AEC0;
@@ -267,7 +304,6 @@
     </style>
 </head>
 <body>
-
     <!-- 1. Menú Lateral (Sidebar) -->
     <aside class="admin-sidebar">
         <a href="{{ route('home') }}" class="admin-brand">
@@ -417,7 +453,6 @@
                 </table>
             </div>
         </section>
-
     </main>
 
     <!-- Modal de Justificación de Rechazo -->
@@ -482,7 +517,7 @@
                 const response = await fetch(`${API_BASE_URL}/admin/artist-requests`, {
                     headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
                 });
-                if(!response.ok) return;
+                if (!response.ok) return;
 
                 const requests = await response.json();
                 const tbody = document.getElementById('requests-table-body');
@@ -523,11 +558,13 @@
                     body: JSON.stringify({ status: 'approved' })
                 });
 
-                if(res.ok) {
+                if (res.ok) {
                     alert("Solicitud aprobada con éxito.");
                     loadRequestsData();
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         // Manejo del Modal de Rechazo
@@ -565,12 +602,14 @@
                     })
                 });
 
-                if(res.ok) {
+                if (res.ok) {
                     alert("La solicitud ha sido rechazada.");
                     closeRejectModal();
                     loadRequestsData();
                 }
-            } catch (e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            }
         }
     </script>
 </body>
