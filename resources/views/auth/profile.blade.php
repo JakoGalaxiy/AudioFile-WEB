@@ -202,11 +202,12 @@
     <div class="main-content">
         <div class="register-card">
             <h2>Perfil de Usuario</h2>
-            <div id="artist-request-status-card" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 1.4;"></div>
             <div class="subtitle">Gestiona tu información</div>
 
             <div id="error-alert" class="alert error-alert"></div>
             <div id="success-alert" class="alert success-alert"></div>
+
+            <div id="artist-request-status-card" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 1.4;"></div>
 
             <form id="profile-form">
                 <div class="input-group">
@@ -417,7 +418,7 @@
                     <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Estado: Verificado</div>
                     Tu solicitud ha sido aceptada por un Administrador. ¡Bienvenido <strong>${stageName}</strong> como Artista!
                 `;
-            } else if (status === 'denied') {
+            } else if (status === 'rejected') {
                 statusCard.style.backgroundColor = 'rgba(255, 75, 75, 0.15)';
                 statusCard.style.border = '1px solid rgba(255, 75, 75, 0.4)';
                 statusCard.style.color = '#FF4B4B';
@@ -427,6 +428,81 @@
                 `;
             }
         }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Consultar el estado del usuario/artista al cargar la página
+    fetchArtistStatus();
+});
+
+async function fetchArtistStatus() {
+    const token = localStorage.getItem('auth_token');
+    if (!token) return;
+
+    const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000/api') }}";
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/user`, {
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            const user = result.user || result.data || result;
+
+            if (user) {
+                // Dibujar el estado en la tarjeta
+                renderArtistRequestStatus(user.artist);
+            }
+        }
+    } catch (error) {
+        console.error("Error al consultar estado de artista:", error);
+    }
+}
+
+function renderArtistRequestStatus(artistData) {
+    const statusCard = document.getElementById('artist-request-status-card');
+    if (!statusCard) return;
+
+    // Si no ha hecho solicitud de artista, se mantiene oculto
+    if (!artistData) {
+        statusCard.style.display = 'none';
+        return;
+    }
+
+    const status = artistData.verification_status;
+    const stageName = artistData.stage_name || '';
+
+    statusCard.style.display = 'block';
+
+    if (status === 'pending') {
+        statusCard.style.backgroundColor = 'rgba(44, 228, 245, 0.15)';
+        statusCard.style.border = '1px solid rgba(44, 228, 245, 0.4)';
+        statusCard.style.color = '#2CE4F5';
+        statusCard.innerHTML = `
+            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-clock"></i> Estado: Pendiente de revisión</div>
+            Tu solicitud para el nombre artístico <strong>${stageName}</strong> está bajo revisión por un Administrador.
+        `;
+    } else if (status === 'verified') {
+        statusCard.style.backgroundColor = 'rgba(103, 244, 206, 0.15)';
+        statusCard.style.border = '1px solid rgba(103, 244, 206, 0.4)';
+        statusCard.style.color = '#67F4CE';
+        statusCard.innerHTML = `
+            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Estado: Verificado</div>
+            ¡Felicidades! Tu solicitud ha sido aprobada. Ahora eres formalmente el artista <strong>${stageName}</strong>.
+        `;
+    } else if (status === 'rejected' || status === 'rejected') {
+        statusCard.style.backgroundColor = 'rgba(255, 75, 75, 0.15)';
+        statusCard.style.border = '1px solid rgba(255, 75, 75, 0.4)';
+        statusCard.style.color = '#FF4B4B';
+        statusCard.innerHTML = `
+            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark"></i> Estado: Rechazado</div>
+            Tu solicitud para ser artista fue rechazada. El nombre artístico ha sido liberado.
+        `;
+    }
+}
     </script>
 </body>
 </html>

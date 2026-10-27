@@ -4,15 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - AudioFile</title>
-
+    
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}?v=2.0">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=2.0">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             background-color: #13161F;
             color: #FFFFFF;
@@ -141,7 +140,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            width: 300px;
+            width: 320px;
         }
         .search-box input {
             background: transparent;
@@ -165,9 +164,7 @@
             gap: 8px;
             transition: opacity 0.2s;
         }
-        .btn-action-primary:hover {
-            opacity: 0.9;
-        }
+        .btn-action-primary:hover { opacity: 0.9; }
         /* Estilos de Tabla */
         .data-table-wrapper {
             background-color: #1E2433;
@@ -225,33 +222,38 @@
         /* Botones de Acción de Fila */
         .btn-table-action {
             background: transparent;
-            border: none;
+            border: 1px solid transparent;
             cursor: pointer;
-            font-size: 14px;
-            padding: 6px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
+            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-right: 5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
-        .btn-approve {
-            color: #67F4CE;
+        .btn-approve { 
+            color: #67F4CE; 
+            border-color: rgba(103, 244, 206, 0.3);
+            background-color: rgba(103, 244, 206, 0.08);
         }
-        .btn-approve:hover {
-            background-color: rgba(103, 244, 206, 0.1);
+        .btn-approve:hover { 
+            background-color: rgba(103, 244, 206, 0.2); 
         }
-        .btn-reject {
-            color: #FF4B4B;
+        .btn-reject { 
+            color: #FF4B4B; 
+            border-color: rgba(255, 75, 75, 0.3);
+            background-color: rgba(255, 75, 75, 0.08);
         }
-        .btn-reject:hover {
-            background-color: rgba(255, 75, 75, 0.1);
+        .btn-reject:hover { 
+            background-color: rgba(255, 75, 75, 0.2); 
         }
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
             display: none;
             justify-content: center;
             align-items: center;
@@ -268,8 +270,7 @@
         }
         .modal-card h3 {
             margin-top: 0;
-            font-size: 20px;
-            color: #FFF;
+            font-size: 20px; color: #FFF;
         }
         .modal-card textarea {
             width: 100%;
@@ -283,6 +284,7 @@
             min-height: 100px;
             outline: none;
             margin: 15px 0;
+            box-sizing: border-box;
         }
         .modal-card textarea:focus {
             border-color: #2CE4F5;
@@ -301,13 +303,23 @@
             cursor: pointer;
             font-weight: 600;
         }
+        .badge-count {
+            background-color: #FFC107;
+            color: #13161F;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 2px 7px;
+            border-radius: 10px;
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
+
     <!-- 1. Menú Lateral (Sidebar) -->
     <aside class="admin-sidebar">
         <a href="{{ route('home') }}" class="admin-brand">
-            <i class="fa-solid fa-compact-disc"></i> AudioFile <span style="font-size:11px; background:rgba(44,228,245,0.2); padding:2px 6px; border-radius:4px;">ADMIN</span>
+            <i class="fa-solid fa-compact-disc"></i>AudioFile <span style="font-size:11px; background:rgba(44,228,245,0.2); padding:2px 6px; border-radius:4px;">ADMIN</span>
         </a>
 
         <div class="sidebar-section-title">Gestión de Contenido</div>
@@ -326,7 +338,10 @@
         <div class="sidebar-section-title">Usuarios & Solicitudes</div>
         <ul class="admin-menu">
             <li class="admin-menu-item" onclick="switchSection('requests-section', this)">
-                <a><i class="fa-solid fa-user-clock"></i> Solicitudes Artista</a>
+                <a>
+                    <i class="fa-solid fa-user-clock"></i> Solicitudes Artista
+                    <span id="requests-counter-badge" class="badge-count" style="display: none;">0</span>
+                </a>
             </li>
             <li class="admin-menu-item" onclick="switchSection('users-section', this)">
                 <a><i class="fa-solid fa-users"></i> Oyentes</a>
@@ -380,8 +395,11 @@
             <div class="section-toolbar">
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass" style="color:#6A7B92;"></i>
-                    <input type="text" placeholder="Buscar solicitud...">
+                    <input type="text" id="requests-search-input" placeholder="Buscar por usuario, correo o nombre artístico...">
                 </div>
+                <button class="btn-action-primary" onclick="loadArtistRequests()">
+                    <i class="fa-solid fa-rotate-right"></i> Actualizar
+                </button>
             </div>
 
             <div class="data-table-wrapper">
@@ -453,6 +471,7 @@
                 </table>
             </div>
         </section>
+
     </main>
 
     <!-- Modal de Justificación de Rechazo -->
@@ -463,7 +482,7 @@
             <textarea id="reject-reason-input" placeholder="Ej: El nombre artístico infringe derechos de autor o los datos están incompletos..."></textarea>
             <div class="modal-actions">
                 <button class="btn-secondary" onclick="closeRejectModal()">Cancelar</button>
-                <button class="btn-action-primary" style="background:#FF4B4B; color:#FFF;" onclick="confirmRejection()">Confirmar Rechazo</button>
+                <button class="btn-action-primary" id="confirm-reject-btn" style="background:#FF4B4B; color:#FFF;" onclick="confirmRejection()">Confirmar Rechazo</button>
             </div>
         </div>
     </div>
@@ -471,6 +490,14 @@
     <script>
         const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000/api') }}";
         let selectedRequestId = null;
+        let allRequests = [];
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
 
         // Verificación de Acceso de Administrador
         document.addEventListener("DOMContentLoaded", () => {
@@ -488,7 +515,34 @@
             document.getElementById('admin-avatar-char').textContent = adminName.charAt(0).toUpperCase();
 
             // Cargar datos iniciales
-            loadRequestsData();
+            loadArtistRequests();
+
+            // Filtro de búsqueda en tiempo real
+            const searchInput = document.getElementById('requests-search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const term = e.target.value.toLowerCase().trim();
+                    if (!term) {
+                        renderRequestsTable(allRequests);
+                        return;
+                    }
+                    const filtered = allRequests.filter(req => {
+                        const username = (req.user?.username || '').toLowerCase();
+                        const email = (req.user?.email || '').toLowerCase();
+                        const stage = (req.stage_name || '').toLowerCase();
+                        return username.includes(term) || email.includes(term) || stage.includes(term);
+                    });
+                    renderRequestsTable(filtered);
+                });
+            }
+
+            // Cerrar modal al hacer clic fuera del contenido
+            const modal = document.getElementById('reject-modal');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeRejectModal();
+                }
+            });
         });
 
         // Alternar Secciones del Sidebar
@@ -497,7 +551,7 @@
             document.querySelectorAll('.admin-menu-item').forEach(item => item.classList.remove('active'));
 
             document.getElementById(sectionId).classList.add('active');
-            element.classList.add('active');
+            if (element) element.classList.add('active');
 
             // Actualizar Título
             const titles = {
@@ -508,107 +562,176 @@
                 'users-section': 'Gestión de Usuarios (Oyentes)'
             };
             document.getElementById('page-title').textContent = titles[sectionId] || 'Panel de Administración';
+
+            // Si se selecciona la sección de solicitudes, recargar la lista
+            if (sectionId === 'requests-section') {
+                loadArtistRequests();
+            }
         }
 
-        // Cargar Solicitudes Pendientes desde la API
-        async function loadRequestsData() {
+        // Cargar solicitudes pendientes desde la API
+        async function loadArtistRequests() {
             const token = localStorage.getItem('auth_token');
+            const tbody = document.getElementById('requests-table-body');
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6A7B92; padding:30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando solicitudes...</td></tr>`;
+
             try {
                 const response = await fetch(`${API_BASE_URL}/admin/artist-requests`, {
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' }
+                    headers: { 
+                        'Authorization': `Bearer ${token}`, 
+                        'Accept': 'application/json' 
+                    }
                 });
-                if (!response.ok) return;
 
-                const requests = await response.json();
-                const tbody = document.getElementById('requests-table-body');
-                tbody.innerHTML = '';
+                if (!response.ok) {
+                    if (response.status === 401 || response.status === 403) {
+                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;"><i class="fa-solid fa-lock"></i> No tienes permisos de administrador para ver las solicitudes.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;">Error al cargar las solicitudes (Código ${response.status}).</td></tr>`;
+                    }
+                    return;
+                }
 
-                requests.forEach(req => {
-                    tbody.innerHTML += `
-                        <tr>
-                            <td>${req.user?.username || 'N/A'}</td>
-                            <td>${req.user?.email || 'N/A'}</td>
-                            <td><strong>${req.stage_name}</strong></td>
-                            <td><span class="badge badge-pending">Pendiente de revisión</span></td>
-                            <td>
-                                <button class="btn-table-action btn-approve" onclick="approveRequest('${req.id}')" title="Aprobar"><i class="fa-solid fa-check"></i></button>
-                                <button class="btn-table-action btn-reject" onclick="openRejectModal('${req.id}')" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
-                            </td>
-                        </tr>
-                    `;
-                });
+                const result = await response.json();
+                const requests = result.data || (Array.isArray(result) ? result : []);
+                allRequests = requests;
+
+                // Actualizar badge contador
+                const badge = document.getElementById('requests-counter-badge');
+                if (badge) {
+                    if (requests.length > 0) {
+                        badge.textContent = requests.length;
+                        badge.style.display = 'inline-block';
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                renderRequestsTable(allRequests);
             } catch (err) {
                 console.error("Error al cargar solicitudes:", err);
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;"><i class="fa-solid fa-triangle-exclamation"></i> Error al conectar con el servidor.</td></tr>`;
             }
         }
 
-        // Aprobar Solicitud
-        async function approveRequest(artistId) {
-            if (!confirm("¿Deseas aprobar a este usuario como artista oficial?")) return;
+        // Renderizar la tabla de solicitudes
+        function renderRequestsTable(requests) {
+            const tbody = document.getElementById('requests-table-body');
+            tbody.innerHTML = '';
+
+            if (!Array.isArray(requests) || requests.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6A7B92; padding:35px;"><i class="fa-regular fa-folder-open" style="font-size:24px; margin-bottom:10px; display:block;"></i>No hay solicitudes pendientes en este momento.</td></tr>`;
+                return;
+            }
+
+            requests.forEach(req => {
+                const username = req.user?.username || 'Usuario no encontrado';
+                const email = req.user?.email || 'N/A';
+                const stageName = req.stage_name || 'N/A';
+                const requestId = req.id;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${escapeHtml(username)}</strong></td>
+                        <td>${escapeHtml(email)}</td>
+                        <td><span style="color:#2CE4F5; font-weight:600;">${escapeHtml(stageName)}</span></td>
+                        <td><span class="badge badge-pending"><i class="fa-regular fa-clock"></i> Pendiente</span></td>
+                        <td>
+                            <button class="btn-table-action btn-approve" onclick="approveRequest('${requestId}')" title="Aprobar solicitud">
+                                <i class="fa-solid fa-check"></i> Aprobar
+                            </button>
+                            <button class="btn-table-action btn-reject" onclick="openRejectModal('${requestId}')" title="Rechazar solicitud">
+                                <i class="fa-solid fa-xmark"></i> Rechazar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Función para aprobar las solicitudes de artista
+        async function approveRequest(requestId) {
+            if (!confirm('¿Estás seguro de que deseas aprobar esta solicitud de artista?')) return;
+
             const token = localStorage.getItem('auth_token');
 
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/artist-requests/${artistId}/status`, {
-                    method: 'PATCH',
+                const response = await fetch(`${API_BASE_URL}/admin/artist-requests/${requestId}/approve`, {
+                    method: 'PUT',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({ status: 'approved' })
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
 
-                if (res.ok) {
-                    alert("Solicitud aprobada con éxito.");
-                    loadRequestsData();
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Solicitud aprobada correctamente. El usuario ahora tiene rol de Artista.');
+                    loadArtistRequests();
+                } else {
+                    alert(data.message || 'Error al aprobar la solicitud.');
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (error) {
+                console.error("Error al aprobar:", error);
+                alert('Error de conexión al aprobar la solicitud.');
             }
         }
 
-        // Manejo del Modal de Rechazo
+        // Modal de rechazo
         function openRejectModal(requestId) {
             selectedRequestId = requestId;
+            document.getElementById('reject-reason-input').value = '';
             document.getElementById('reject-modal').style.display = 'flex';
+            document.getElementById('reject-reason-input').focus();
         }
 
         function closeRejectModal() {
             selectedRequestId = null;
-            document.getElementById('reject-reason-input').value = '';
             document.getElementById('reject-modal').style.display = 'none';
         }
 
-        // Confirmar Rechazo con Justificación
         async function confirmRejection() {
+            if (!selectedRequestId) return;
             const reason = document.getElementById('reject-reason-input').value.trim();
             if (!reason) {
-                alert("Por favor ingresa un motivo para el rechazo.");
+                alert('Por favor indica un motivo de rechazo.');
                 return;
             }
 
             const token = localStorage.getItem('auth_token');
+            const confirmBtn = document.getElementById('confirm-reject-btn');
+            const originalText = confirmBtn.textContent;
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = 'Procesando...';
+
             try {
-                const res = await fetch(`${API_BASE_URL}/admin/artist-requests/${selectedRequestId}/status`, {
+                const response = await fetch(`${API_BASE_URL}/admin/artist-requests/${selectedRequestId}/reject`, {
                     method: 'PATCH',
                     headers: {
+                        'Accept': 'application/json',
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/json'
+                        'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({
-                        status: 'rejected',
-                        rejection_reason: reason
-                    })
+                    body: JSON.stringify({ rejection_reason: reason })
                 });
 
-                if (res.ok) {
-                    alert("La solicitud ha sido rechazada.");
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Solicitud rechazada exitosamente.');
                     closeRejectModal();
-                    loadRequestsData();
+                    loadArtistRequests();
+                } else {
+                    alert(data.message || 'Error al rechazar la solicitud.');
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (error) {
+                console.error("Error al rechazar:", error);
+                alert('Error de conexión al rechazar la solicitud.');
+            } finally {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = originalText;
             }
         }
     </script>
