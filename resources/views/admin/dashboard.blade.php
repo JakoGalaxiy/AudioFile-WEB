@@ -249,6 +249,27 @@
         .btn-reject:hover { 
             background-color: rgba(255, 75, 75, 0.2); 
         }
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .filter-btn {
+            background-color: transparent;
+            color: #6A7B92;
+            border: 1px solid #6A7B92;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: rgba(44, 228, 245, 0.15);
+            color: #2CE4F5;
+            border-color: rgba(44, 228, 245, 0.4);
+        }
         /* Modal Overlay */
         .modal-overlay {
             position: fixed;
@@ -392,14 +413,22 @@
 
         <!-- Seccion: Solicitudes de Artista -->
         <section id="requests-section" class="content-section">
-            <div class="section-toolbar">
-                <div class="search-box">
-                    <i class="fa-solid fa-magnifying-glass" style="color:#6A7B92;"></i>
-                    <input type="text" id="requests-search-input" placeholder="Buscar por usuario, correo o nombre artístico...">
+            <div class="section-toolbar" style="flex-direction: column; align-items: flex-start;">
+                <div class="filter-tabs">
+                    <button class="filter-btn active" onclick="filterRequests('pending', this)">Pendientes</button>
+                    <button class="filter-btn" onclick="filterRequests('verified', this)">Aceptados</button>
+                    <button class="filter-btn" onclick="filterRequests('rejected', this)">Rechazados</button>
+                    <button class="filter-btn" onclick="filterRequests('all', this)">Todos</button>
                 </div>
-                <button class="btn-action-primary" onclick="loadArtistRequests()">
-                    <i class="fa-solid fa-rotate-right"></i> Actualizar
-                </button>
+                <div style="display: flex; justify-content: space-between; width: 100%; gap: 15px;">
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass" style="color:#6A7B92;"></i>
+                        <input type="text" id="requests-search-input" placeholder="Buscar por usuario o nombre...">
+                    </div>
+                    <button class="btn-action-primary" onclick="loadArtistRequests()">
+                        <i class="fa-solid fa-rotate-right"></i> Actualizar
+                    </button>
+                </div>
             </div>
 
             <div class="data-table-wrapper">
@@ -569,58 +598,57 @@
             }
         }
 
-        // Cargar solicitudes pendientes desde la API
-        async function loadArtistRequests() {
+        let currentStatusFilter = 'pending';
+
+        function filterRequests(status, buttonEl) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (buttonEl) buttonEl.classList.add('active');
+            
+            // Al hacer clic, pedimos al servidor exactamente los datos de esa pestaña
+            loadArtistRequests(status);
+        }
+
+        async function loadArtistRequests(status = currentStatusFilter) {
+            currentStatusFilter = status;
             const token = localStorage.getItem('auth_token');
             const tbody = document.getElementById('requests-table-body');
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6A7B92; padding:30px;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando solicitudes...</td></tr>`;
 
             try {
-                const response = await fetch(`${API_BASE_URL}/admin/artist-requests`, {
+                // Se envía el parámetro ?status= al backend
+                const response = await fetch(`${API_BASE_URL}/admin/artist-requests?status=${status}`, {
                     headers: { 
                         'Authorization': `Bearer ${token}`, 
                         'Accept': 'application/json' 
                     }
                 });
 
-                if (!response.ok) {
-                    if (response.status === 401 || response.status === 403) {
-                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;"><i class="fa-solid fa-lock"></i> No tienes permisos de administrador para ver las solicitudes.</td></tr>`;
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;">Error al cargar las solicitudes (Código ${response.status}).</td></tr>`;
-                    }
-                    return;
-                }
+                if (!response.ok) throw new Error('Error al cargar las solicitudes');
 
                 const result = await response.json();
-                const requests = result.data || (Array.isArray(result) ? result : []);
-                allRequests = requests;
+                allRequests = result.data || (Array.isArray(result) ? result : []);
 
-                // Actualizar badge contador
-                const badge = document.getElementById('requests-counter-badge');
-                if (badge) {
-                    if (requests.length > 0) {
-                        badge.textContent = requests.length;
-                        badge.style.display = 'inline-block';
-                    } else {
-                        badge.style.display = 'none';
+                // Actualizar el globo notificador solo si estamos visualizando las pendientes
+                if (status === 'pending') {
+                    const badge = document.getElementById('requests-counter-badge');
+                    if (badge) {
+                        badge.style.display = allRequests.length > 0 ? 'inline-block' : 'none';
+                        badge.textContent = allRequests.length;
                     }
                 }
 
                 renderRequestsTable(allRequests);
             } catch (err) {
-                console.error("Error al cargar solicitudes:", err);
                 tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#FF4B4B; padding:30px;"><i class="fa-solid fa-triangle-exclamation"></i> Error al conectar con el servidor.</td></tr>`;
             }
         }
 
-        // Renderizar la tabla de solicitudes
         function renderRequestsTable(requests) {
             const tbody = document.getElementById('requests-table-body');
             tbody.innerHTML = '';
 
             if (!Array.isArray(requests) || requests.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6A7B92; padding:35px;"><i class="fa-regular fa-folder-open" style="font-size:24px; margin-bottom:10px; display:block;"></i>No hay solicitudes pendientes en este momento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6A7B92; padding:35px;"><i class="fa-regular fa-folder-open" style="font-size:24px; margin-bottom:10px; display:block;"></i>No hay solicitudes en esta categoría.</td></tr>`;
                 return;
             }
 
@@ -628,22 +656,32 @@
                 const username = req.user?.username || 'Usuario no encontrado';
                 const email = req.user?.email || 'N/A';
                 const stageName = req.stage_name || 'N/A';
-                const requestId = req.id;
+                const status = req.verification_status;
+                
+                let badgeHtml = '';
+                let actionsHtml = '';
+
+                if (status === 'pending') {
+                    badgeHtml = `<span class="badge badge-pending"><i class="fa-regular fa-clock"></i> Pendiente</span>`;
+                    actionsHtml = `
+                        <button class="btn-table-action btn-approve" onclick="approveRequest('${req.id}')" title="Aprobar solicitud"><i class="fa-solid fa-check"></i> Aprobar</button>
+                        <button class="btn-table-action btn-reject" onclick="openRejectModal('${req.id}')" title="Rechazar solicitud"><i class="fa-solid fa-xmark"></i> Rechazar</button>
+                    `;
+                } else if (status === 'verified') {
+                    badgeHtml = `<span class="badge badge-approved" style="color: #67F4CE; background: rgba(103, 244, 206, 0.15); border-color: rgba(103, 244, 206, 0.3);"><i class="fa-solid fa-check"></i> Aceptado</span>`;
+                    actionsHtml = `<span style="color:#6A7B92; font-size:12px;">Procesado</span>`;
+                } else {
+                    badgeHtml = `<span class="badge badge-rejected"><i class="fa-solid fa-xmark"></i> Rechazado</span>`;
+                    actionsHtml = `<span style="color:#6A7B92; font-size:12px;" title="${req.rejection_reason || 'Rechazado'}">Ver motivo</span>`;
+                }
 
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${escapeHtml(username)}</strong></td>
                         <td>${escapeHtml(email)}</td>
                         <td><span style="color:#2CE4F5; font-weight:600;">${escapeHtml(stageName)}</span></td>
-                        <td><span class="badge badge-pending"><i class="fa-regular fa-clock"></i> Pendiente</span></td>
-                        <td>
-                            <button class="btn-table-action btn-approve" onclick="approveRequest('${requestId}')" title="Aprobar solicitud">
-                                <i class="fa-solid fa-check"></i> Aprobar
-                            </button>
-                            <button class="btn-table-action btn-reject" onclick="openRejectModal('${requestId}')" title="Rechazar solicitud">
-                                <i class="fa-solid fa-xmark"></i> Rechazar
-                            </button>
-                        </td>
+                        <td>${badgeHtml}</td>
+                        <td>${actionsHtml}</td>
                     </tr>
                 `;
             });
