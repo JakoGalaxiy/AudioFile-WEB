@@ -27,3 +27,7 @@ Route::get('/search', function (Request $request) {
 Route::get('/admin', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
+
+Route::get('/artist', function () {
+    return view('artist.dashboard');
+});
