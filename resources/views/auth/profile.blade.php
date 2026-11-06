@@ -194,7 +194,6 @@
     <nav class="navbar">
         <a href="{{ route('home') }}" class="nav-brand">AudioFile</a>
         <div class="nav-links" id="nav-auth-links">
-            <!-- Renderizado dinámico vía JavaScript -->
         </div>
     </nav>
 
@@ -208,6 +207,21 @@
             <div id="success-alert" class="alert success-alert"></div>
 
             <div id="artist-request-status-card" style="display: none; margin-bottom: 20px; padding: 15px; border-radius: 10px; font-size: 13px; line-height: 1.4;"></div>
+
+            <!-- Contenedor para solicitar ser artista (Oyentes o rechazados) -->
+            <div id="become-artist-container" style="display: none; margin-bottom: 20px; text-align: center;">
+                <button type="button" id="toggle-artist-form-btn" class="register-btn" style="background: transparent; border: 1px solid #2CE4F5; color: #2CE4F5; margin-bottom: 10px; padding: 10px;">
+                    <i class="fa-solid fa-microphone"></i> Solicitar cuenta de Artista
+                </button>
+
+                <form id="become-artist-form" style="display: none; background: #151924; padding: 15px; border-radius: 10px; text-align: left; border: 1px solid rgba(44, 228, 245, 0.2);">
+                    <div class="input-group" style="margin-bottom: 10px;">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                        <input type="text" id="request_stage_name" placeholder="Tu nombre artístico propuesto" required>
+                    </div>
+                    <button type="submit" id="submit-artist-request-btn" class="register-btn" style="width: 100%; padding: 10px; margin-top: 0; font-size: 13px;">Enviar Solicitud</button>
+                </form>
+            </div>
 
             <form id="profile-form">
                 <div class="input-group">
@@ -387,12 +401,48 @@
             }
         });
 
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Consultar el estado del usuario/artista al cargar la página
+            fetchArtistStatus();
+        });
+
+        async function fetchArtistStatus() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) return;
+
+            const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000/api') }}";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/user`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const user = result.user || result.data || result;
+
+                    if (user) {
+                        // Dibujar el estado en la tarjeta
+                        renderArtistRequestStatus(user.artist);
+                    }
+                }
+            } catch (error) {
+                console.error("Error al consultar estado de artista:", error);
+            }
+        }
+
         function renderArtistRequestStatus(artistData) {
             const statusCard = document.getElementById('artist-request-status-card');
-            if (!statusCard) return;
+            const becomeArtistContainer = document.getElementById('become-artist-container');
+            if (!statusCard || !becomeArtistContainer) return;
 
-            if (!artistData) {
+            if (!artistData || !artistData.verification_status) {
                 statusCard.style.display = 'none';
+                becomeArtistContainer.style.display = 'block';
                 return;
             }
 
@@ -400,6 +450,7 @@
             const stageName = artistData.stage_name || '';
             const reason = artistData.rejection_reason ? `<br><strong>Motivo:</strong> ${artistData.rejection_reason}` : '';
 
+            becomeArtistContainer.style.display = 'none';
             statusCard.style.display = 'block';
 
             if (status === 'pending') {
@@ -407,8 +458,8 @@
                 statusCard.style.border = '1px solid rgba(44, 228, 245, 0.4)';
                 statusCard.style.color = '#2CE4F5';
                 statusCard.innerHTML = `
-                    <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-clock"></i> Estado: Pendiente</div>
-                    Tu solicitud está bajo revisión por un Administrador. Por favor, espera mientras verificamos tus datos.
+                    <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-clock"></i> Estado: Pendiente de revisión</div>
+                    Tu solicitud para el nombre artístico <strong>${stageName}</strong> está bajo revisión por un Administrador.
                 `;
             } else if (status === 'verified') {
                 statusCard.style.backgroundColor = 'rgba(103, 244, 206, 0.15)';
@@ -416,93 +467,62 @@
                 statusCard.style.color = '#67F4CE';
                 statusCard.innerHTML = `
                     <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Estado: Verificado</div>
-                    Tu solicitud ha sido aceptada por un Administrador. ¡Bienvenido <strong>${stageName}</strong> como Artista!
+                    ¡Felicidades! Tu solicitud ha sido aprobada. Ahora eres formalmente el artista <strong>${stageName}</strong>.
                 `;
-            } else if (status === 'rejected') {
+            } else if (status === 'rejected' || status === 'denied') {
                 statusCard.style.backgroundColor = 'rgba(255, 75, 75, 0.15)';
                 statusCard.style.border = '1px solid rgba(255, 75, 75, 0.4)';
                 statusCard.style.color = '#FF4B4B';
                 statusCard.innerHTML = `
                     <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark"></i> Estado: Rechazado</div>
-                    Tu solicitud ha sido rechazada por un Administrador. ${reason}
+                    Tu solicitud para <strong>${stageName}</strong> fue rechazada. ${reason}
+                    <div style="margin-top: 10px;">
+                        <button onclick="resetArtistRequestView()" style="background: transparent; border: 1px solid #FF4B4B; color: #FF4B4B; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 11px;">Intentar con otro nombre</button>
+                    </div>
                 `;
             }
         }
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Consultar el estado del usuario/artista al cargar la página
-    fetchArtistStatus();
-});
-
-async function fetchArtistStatus() {
-    const token = localStorage.getItem('auth_token');
-    if (!token) return;
-
-    const API_BASE_URL = "{{ env('API_URL', 'http://localhost:8000/api') }}";
-
-    try {
-        const response = await fetch(`${API_BASE_URL}/user`, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
+        document.getElementById('toggle-artist-form-btn')?.addEventListener('click', () => {
+            const form = document.getElementById('become-artist-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
         });
 
-        if (response.ok) {
-            const result = await response.json();
-            const user = result.user || result.data || result;
-
-            if (user) {
-                // Dibujar el estado en la tarjeta
-                renderArtistRequestStatus(user.artist);
-            }
+        function resetArtistRequestView() {
+            document.getElementById('artist-request-status-card').style.display = 'none';
+            document.getElementById('become-artist-container').style.display = 'block';
+            document.getElementById('become-artist-form').style.display = 'block';
         }
-    } catch (error) {
-        console.error("Error al consultar estado de artista:", error);
-    }
-}
 
-function renderArtistRequestStatus(artistData) {
-    const statusCard = document.getElementById('artist-request-status-card');
-    if (!statusCard) return;
+        document.getElementById('become-artist-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const stageName = document.getElementById('request_stage_name').value;
+            const token = localStorage.getItem('auth_token');
+            const submitBtn = document.getElementById('submit-artist-request-btn');
+            submitBtn.disabled = true;
 
-    // Si no ha hecho solicitud de artista, se mantiene oculto
-    if (!artistData) {
-        statusCard.style.display = 'none';
-        return;
-    }
+            try {
+                const response = await fetch(`${API_BASE_URL}/artist-request`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + localStorage.getItem('auth_token')
+                    },
+                    body: JSON.stringify({ stage_name: stageName })
+                });
 
-    const status = artistData.verification_status;
-    const stageName = artistData.stage_name || '';
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Error al enviar solicitud.');
 
-    statusCard.style.display = 'block';
-
-    if (status === 'pending') {
-        statusCard.style.backgroundColor = 'rgba(44, 228, 245, 0.15)';
-        statusCard.style.border = '1px solid rgba(44, 228, 245, 0.4)';
-        statusCard.style.color = '#2CE4F5';
-        statusCard.innerHTML = `
-            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-clock"></i> Estado: Pendiente de revisión</div>
-            Tu solicitud para el nombre artístico <strong>${stageName}</strong> está bajo revisión por un Administrador.
-        `;
-    } else if (status === 'verified') {
-        statusCard.style.backgroundColor = 'rgba(103, 244, 206, 0.15)';
-        statusCard.style.border = '1px solid rgba(103, 244, 206, 0.4)';
-        statusCard.style.color = '#67F4CE';
-        statusCard.innerHTML = `
-            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i> Estado: Verificado</div>
-            ¡Felicidades! Tu solicitud ha sido aprobada. Ahora eres formalmente el artista <strong>${stageName}</strong>.
-        `;
-    } else if (status === 'rejected' || status === 'rejected') {
-        statusCard.style.backgroundColor = 'rgba(255, 75, 75, 0.15)';
-        statusCard.style.border = '1px solid rgba(255, 75, 75, 0.4)';
-        statusCard.style.color = '#FF4B4B';
-        statusCard.innerHTML = `
-            <div style="font-weight: bold; margin-bottom: 4px;"><i class="fa-solid fa-circle-xmark"></i> Estado: Rechazado</div>
-            Tu solicitud para ser artista fue rechazada. El nombre artístico ha sido liberado.
-        `;
-    }
-}
+                alert('¡Solicitud enviada correctamente!');
+                fetchArtistStatus();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
