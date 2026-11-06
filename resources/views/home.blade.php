@@ -846,19 +846,29 @@
 
     <!-- Sidebar Lateral -->
     <aside class="sidebar">
-    <!-- Etiqueta de ADMIN y botón de Panel de Administrador -->
-    <div id="admin-sidebar-option" style="display: none;">
-        <div class="sidebar-group-title">Administración</div>
-        <ul class="sidebar-menu">
-            <li class="sidebar-item" style="background: rgba(44, 228, 245, 0.1); border-radius: 8px;">
-                <a href="{{ route('admin.dashboard') }}" class="admin-brand" style="margin-bottom: 0; padding: 10px 12px; font-size: 14px;">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    <span>Dashboard</span>
-                    <span class="admin-badge-tag">ADMIN</span>
-                </a>
-            </li>
-        </ul>
-    </div>
+        <!-- Etiqueta de ADMIN y botón de Panel de Administrador -->
+        <div id="admin-sidebar-option" style="display: none;">
+            <div class="sidebar-group-title">Administración</div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-item" style="background: rgba(44, 228, 245, 0.1); border-radius: 8px;">
+                    <a href="{{ route('admin.dashboard') }}" class="admin-brand" style="margin-bottom: 0; padding: 10px 12px; font-size: 14px;">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        <span>Dashboard</span>
+                        <span class="admin-badge-tag">ADMIN</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Etiqueta de ARTISTA y botón de Panel de Artista -->
+        <div id="artist-access-container" style="display: none; margin-left: 15px;">
+            <a href="/artist" style="text-decoration: none;">
+                <button style="background: linear-gradient(to right, #2CE4F5, #67F4CE); color: #13161F; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-microphone-lines"></i> Panel de Artista
+                    <span style="background-color: #13161F; color: #2CE4F5; font-size: 10px; padding: 2px 6px; border-radius: 12px; margin-left: 5px;">PRO</span>
+                </button>
+            </a>
+        </div>
 
         <div>
             <div class="sidebar-group-title">Menú Principal</div>
@@ -1098,7 +1108,7 @@
             if (adminSidebarOption && isValidToken && isAdmin) {
                 adminSidebarOption.style.display = 'block';
             }
-            // Opcional: Agregar Badge de ADMIN junto a la marca del Navbar si es Admin
+            // Agregar Badge de ADMIN junto a la marca del Navbar si es Admin
             if (isValidToken && isAdmin) {
                 const navBrand = document.querySelector('.nav-brand');
                 if (navBrand && !navBrand.querySelector('.admin-badge-tag')) {
@@ -1493,6 +1503,16 @@
                 dropdown.classList.toggle('show');
             }
         }
+    </script>
+
+    <script>
+        // Validar si mostrar el botón en el layout principal
+        document.addEventListener("DOMContentLoaded", () => {
+            const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+            if (userData.role_id === 2) {
+                document.getElementById('artist-access-container').style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
